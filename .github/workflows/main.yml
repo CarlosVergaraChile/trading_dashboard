@@ -1,0 +1,24 @@
+name: Move config.toml to .streamlit
+
+on: [workflow_dispatch]
+
+jobs:
+  move-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Create .streamlit directory
+        run: mkdir -p .streamlit
+      
+      - name: Move config.toml
+        run: mv src/config.toml .streamlit/config.toml
+      
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .streamlit/config.toml
+          git rm src/config.toml
+          git commit -m "chore: move config.toml to .streamlit directory"
+          git push
