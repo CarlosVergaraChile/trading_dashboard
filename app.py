@@ -129,7 +129,7 @@ with col_right:
         st.metric("Max Drawdown Extremo", f"{max_dd:.2%}", delta="Bajo control" if not st.session_state.error_simulado else "Alerta de Liquidación", delta_color="inverse")
         
     if st.session_state.error_simulado:
-        st.error("⚠️ CRITICAL ALERT: Los datos sintéticos generados rompen las restricciones de mercado histórico. El pipeline ha bloqueado la inyección automática en las granjas de servidores de producción.")
+        st.error("⚠️ CRITICAL ALERT: Los datos sintéticos generados rompen las restricciones de mercado histórico. El pipeline ha violentado los límites y fue bloqueado automáticamente.")
     else:
         st.info("ℹ️ INFO: Servidores operando con normalidad. Simulaciones distribuidas bajo arquitectura limpia.")
 
@@ -161,7 +161,7 @@ fig.update_layout(
 
 st.plotly_chart(fig, use_container_width=True)
 
-# 5. REGISTRO DE INFRAESTRUCTURA REMOTA
+# 5. REGISTRO DE INFRAESTRUCTURA REMOTA (Corregido con números de semilla fijos)
 st.markdown("### 🗂️ Registro de Experimentos e Infraestructura Remota")
 grid_df = pd.DataFrame({
     "ID Experimento": ["EXP-2026-004", "EXP-2026-003", "EXP-2026-002"],
