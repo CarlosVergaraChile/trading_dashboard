@@ -41,84 +41,111 @@ st.set_page_config(
     menu_items={
         "Get help": None,
         "Report a Bug": None,
-        "About": "Independent validation layer for algorithmic trading portfolios. Synthetic data only.",
+        "About": "Independent validation layer for algorithmic trading portfolios.",
     },
 )
 
 
 def build_css(theme: str) -> str:
-    """Return CSS adapted to the active theme."""
     if theme == "dark":
-        vars_block = """
+        v = """
             --bg: #0a0e14;
-            --bg2: #111720;
-            --bg3: #1a2230;
-            --border: #1f2a3a;
-            --border-hi: #2a3545;
-            --text: #e6edf3;
-            --text2: #8b98a8;
-            --text3: #5a6675;
+            --bg-2: #0f141c;
+            --surface: #131a24;
+            --surface-2: #1a2230;
+            --surface-3: #212b3b;
+            --border: rgba(148,163,184,.12);
+            --border-hi: rgba(148,163,184,.22);
+            --text: #e8eef5;
+            --text-2: #94a3b8;
+            --text-3: #64748b;
             --accent: #22d3ee;
+            --accent-2: #67e8f9;
+            --accent-soft: rgba(34,211,238,.12);
+            --accent-glow: rgba(34,211,238,.35);
             --green: #10b981;
-            --green-dim: rgba(16, 185, 129, .12);
-            --red: #ef4444;
-            --red-dim: rgba(239, 68, 68, .12);
+            --green-soft: rgba(16,185,129,.12);
+            --green-glow: rgba(16,185,129,.3);
+            --red: #f43f5e;
+            --red-soft: rgba(244,63,94,.12);
+            --red-glow: rgba(244,63,94,.35);
             --amber: #f59e0b;
-            --amber-dim: rgba(245, 158, 11, .12);
+            --amber-soft: rgba(245,158,11,.12);
             --purple: #a78bfa;
-            --card-bg-1: rgba(22,29,40,.95);
-            --card-bg-2: rgba(17,23,32,.92);
-            --metric-bg-1: rgba(26,34,48,.9);
-            --metric-bg-2: rgba(17,23,32,.85);
-            --plot-bg: rgba(17,23,32,.5);
-            --shadow: rgba(0,0,0,.25);
-            --app-bg: #0a0e14;
-            --app-gradient-1: rgba(34,211,238,.06);
-            --app-gradient-2: rgba(167,139,250,.05);
+            --purple-soft: rgba(167,139,250,.12);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+            --shadow-md: 0 4px 16px rgba(0,0,0,.3);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,.45);
+            --plot-bg: rgba(15,20,28,.6);
+            --plot-grid: rgba(148,163,184,.08);
+            --heat-low: #f43f5e;
+            --heat-mid: #131a24;
+            --heat-high: #22d3ee;
+            --input-bg: #1a2230;
+            --input-border: rgba(148,163,184,.22);
+            --select-text: #e8eef5;
         """
     else:
-        vars_block = """
-            --bg: #f6f8fb;
-            --bg2: #ffffff;
-            --bg3: #eef2f7;
-            --border: #e2e8f0;
-            --border-hi: #cbd5e1;
-            --text: #0f172a;
-            --text2: #64748b;
-            --text3: #94a3b8;
+        v = """
+            --bg: #faf8f3;
+            --bg-2: #f5f2ea;
+            --surface: #ffffff;
+            --surface-2: #fdfcfa;
+            --surface-3: #f7f4ed;
+            --border: rgba(28,43,58,.1);
+            --border-hi: rgba(28,43,58,.18);
+            --text: #0f1c2b;
+            --text-2: #55657a;
+            --text-3: #8b98a8;
             --accent: #0891b2;
+            --accent-2: #06b6d4;
+            --accent-soft: rgba(8,145,178,.1);
+            --accent-glow: rgba(8,145,178,.28);
             --green: #059669;
-            --green-dim: rgba(5, 150, 105, .1);
+            --green-soft: rgba(5,150,105,.1);
+            --green-glow: rgba(5,150,105,.25);
             --red: #dc2626;
-            --red-dim: rgba(220, 38, 38, .1);
+            --red-soft: rgba(220,38,38,.09);
+            --red-glow: rgba(220,38,38,.25);
             --amber: #d97706;
-            --amber-dim: rgba(217, 119, 6, .1);
+            --amber-soft: rgba(217,119,6,.1);
             --purple: #7c3aed;
-            --card-bg-1: rgba(255,255,255,.98);
-            --card-bg-2: rgba(248,250,252,.95);
-            --metric-bg-1: rgba(255,255,255,.98);
-            --metric-bg-2: rgba(248,250,252,.95);
-            --plot-bg: rgba(248,250,252,.8);
-            --shadow: rgba(15,23,42,.06);
-            --app-bg: #f6f8fb;
-            --app-gradient-1: rgba(8,145,178,.05);
-            --app-gradient-2: rgba(124,58,237,.04);
+            --purple-soft: rgba(124,58,237,.1);
+            --shadow-sm: 0 1px 2px rgba(28,43,58,.05);
+            --shadow-md: 0 4px 16px rgba(28,43,58,.08);
+            --shadow-lg: 0 12px 40px rgba(28,43,58,.12);
+            --plot-bg: rgba(250,248,243,.9);
+            --plot-grid: rgba(28,43,58,.06);
+            --heat-low: #dc2626;
+            --heat-mid: #faf8f3;
+            --heat-high: #0891b2;
+            --input-bg: #ffffff;
+            --input-border: rgba(28,43,58,.18);
+            --select-text: #0f1c2b;
         """
 
     return f"""
 <style>
     :root {{
-{vars_block}
+{v}
+        --r: 10px;
+        --r-lg: 14px;
+        --r-sm: 6px;
+    }}
+
+    /* BASE */
+    html, body, .stApp, [data-testid="stAppViewContainer"] {{
+        background-color: var(--bg) !important;
+        color: var(--text) !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif !important;
+        font-feature-settings: 'cv02','cv03','cv04','cv11','tnum';
     }}
 
     .stApp {{
-        background: var(--app-bg);
         background-image:
-            radial-gradient(900px 400px at 0% 0%, var(--app-gradient-1), transparent 60%),
-            radial-gradient(700px 500px at 100% 0%, var(--app-gradient-2), transparent 55%);
+            radial-gradient(1200px 500px at 0% -10%, var(--accent-soft), transparent 55%),
+            radial-gradient(900px 600px at 100% 5%, var(--purple-soft), transparent 50%);
         background-attachment: fixed;
-        color: var(--text);
-        transition: background .3s ease, color .3s ease;
     }}
 
     [data-testid="stHeader"], [data-testid="stToolbar"], #MainMenu, footer {{
@@ -127,317 +154,570 @@ def build_css(theme: str) -> str:
     }}
 
     [data-testid="stAppViewContainer"] > .main .block-container {{
-        max-width: 1480px;
-        padding: 1.15rem 2rem 2.4rem;
+        max-width: 1520px;
+        padding: 1.4rem 2.4rem 3rem;
     }}
 
-    h1, h2, h3, p, label, [data-testid="stMetricLabel"] {{ color: var(--text); }}
-    [data-testid="stCaptionContainer"], .stCaption {{ color: var(--text2); }}
+    * {{ box-sizing: border-box; }}
+
+    /* TYPOGRAPHY */
+    h1, h2, h3, h4, h5, p, label, span, div {{ color: var(--text); }}
+
+    .tnum {{ font-variant-numeric: tabular-nums; }}
 
     /* HEADER */
-    .terminal-header {{
+    .term-header {{
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        gap: 1rem;
-        margin: .15rem 0 1rem;
-        padding-bottom: .9rem;
+        gap: 18px;
+        padding: 4px 0 20px;
         border-bottom: 1px solid var(--border);
+        margin-bottom: 24px;
+        position: relative;
     }}
 
-    .brand-lockup {{ display: flex; align-items: center; gap: .85rem; }}
+    .term-header::after {{
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 180px;
+        height: 1px;
+        background: linear-gradient(90deg, var(--accent), transparent);
+    }}
+
+    .brand {{
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
+    }}
+
     .brand-mark {{
+        width: 40px;
+        height: 40px;
         display: grid;
         place-items: center;
-        width: 2.6rem;
-        height: 2.6rem;
-        border: 1px solid rgba(34,211,238,.45);
-        border-radius: .65rem;
-        color: var(--accent);
-        background: rgba(34,211,238,.08);
-        box-shadow: 0 0 22px rgba(34,211,238,.18);
-        font-size: 1.35rem;
-        font-weight: 700;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--accent), var(--purple));
+        color: #06121a;
+        font-size: 20px;
+        font-weight: 800;
+        flex-shrink: 0;
+        box-shadow: 0 0 24px var(--accent-glow);
     }}
 
-    .brand-title {{ font-size: 1.08rem; font-weight: 750; letter-spacing: .035em; color: var(--text); }}
-    .brand-subtitle {{ color: var(--text2); font-size: .78rem; margin-top: .1rem; }}
-
-    .live-badge, .critical-badge {{
-        display: inline-flex;
-        align-items: center;
-        gap: .45rem;
-        padding: .34rem .65rem;
-        border-radius: 999px;
-        font-size: .72rem;
-        letter-spacing: .08em;
+    .brand-title {{
+        font-size: 15px;
         font-weight: 750;
+        letter-spacing: 0.02em;
+        line-height: 1.15;
+        color: var(--text);
         white-space: nowrap;
     }}
 
-    .live-badge {{
+    .brand-sub {{
+        font-size: 11.5px;
+        color: var(--text-2);
+        margin-top: 2px;
+        line-height: 1.3;
+    }}
+
+    .status-chip {{
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }}
+
+    .status-ok {{
         color: var(--green);
-        background: var(--green-dim);
-        border: 1px solid rgba(16,185,129,.32);
-        box-shadow: 0 0 12px rgba(16,185,129,.15);
+        background: var(--green-soft);
+        border: 1px solid var(--green-glow);
+        box-shadow: 0 0 14px var(--green-glow), inset 0 0 10px rgba(16,185,129,.05);
     }}
 
-    .critical-badge {{
+    .status-alert {{
         color: var(--red);
-        background: var(--red-dim);
-        border: 1px solid rgba(239,68,68,.34);
-        box-shadow: 0 0 12px rgba(239,68,68,.2);
+        background: var(--red-soft);
+        border: 1px solid var(--red-glow);
+        box-shadow: 0 0 20px var(--red-glow);
+        animation: alertPulse 1.6s ease-in-out infinite;
     }}
 
-    .pulse {{
-        width: .45rem;
-        height: .45rem;
+    @keyframes alertPulse {{
+        0%, 100% {{ box-shadow: 0 0 14px var(--red-glow); }}
+        50% {{ box-shadow: 0 0 28px var(--red-glow), 0 0 40px var(--red-soft); }}
+    }}
+
+    .status-dot {{
+        width: 6px;
+        height: 6px;
         border-radius: 50%;
         background: currentColor;
-        box-shadow: 0 0 0 0 currentColor;
-        animation: pulse 1.8s infinite;
+        box-shadow: 0 0 8px currentColor;
+        animation: dotPulse 2s ease-in-out infinite;
     }}
-    @keyframes pulse {{ 70% {{ box-shadow: 0 0 0 7px transparent; }} }}
+
+    @keyframes dotPulse {{
+        0%, 100% {{ opacity: 1; transform: scale(1); }}
+        50% {{ opacity: 0.5; transform: scale(0.8); }}
+    }}
+
+    /* INFO BANNER */
+    .info-banner {{
+        position: relative;
+        padding: 18px 22px;
+        border-radius: var(--r-lg);
+        background: linear-gradient(135deg, var(--accent-soft), transparent 70%);
+        border: 1px solid var(--accent-soft);
+        border-left: 3px solid var(--accent);
+        margin-bottom: 24px;
+        overflow: hidden;
+    }}
+
+    .info-banner::before {{
+        content: '';
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: radial-gradient(circle, var(--accent-soft), transparent 70%);
+        pointer-events: none;
+    }}
+
+    .info-eyebrow {{
+        font-size: 10.5px;
+        font-weight: 750;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 8px;
+    }}
+
+    .info-body {{
+        font-size: 13.5px;
+        line-height: 1.65;
+        color: var(--text);
+        position: relative;
+        z-index: 1;
+    }}
+
+    .info-foot {{
+        font-size: 11.5px;
+        color: var(--text-2);
+        margin-top: 10px;
+        line-height: 1.55;
+        position: relative;
+        z-index: 1;
+    }}
 
     /* CARDS */
     [data-testid="stVerticalBlockBorderWrapper"] {{
-        background: linear-gradient(145deg, var(--card-bg-1), var(--card-bg-2));
+        background: var(--surface) !important;
         border: 1px solid var(--border) !important;
-        border-radius: 14px;
-        box-shadow: 0 14px 34px var(--shadow), inset 0 1px 0 rgba(255,255,255,.02);
-        transition: border-color .2s, box-shadow .2s, transform .2s;
+        border-radius: var(--r-lg) !important;
+        box-shadow: var(--shadow-sm);
+        transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
     }}
 
     [data-testid="stVerticalBlockBorderWrapper"]:hover {{
         border-color: var(--border-hi) !important;
-        box-shadow: 0 18px 40px var(--shadow), inset 0 1px 0 rgba(255,255,255,.03);
-        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
     }}
 
     /* METRICS */
     div[data-testid="stMetric"] {{
-        background: linear-gradient(145deg, var(--metric-bg-1), var(--metric-bg-2));
+        background: linear-gradient(160deg, var(--surface-2), var(--surface));
         border: 1px solid var(--border);
         border-left: 3px solid var(--accent);
-        border-radius: 12px;
-        padding: .85rem 1rem;
-        box-shadow: 0 4px 12px var(--shadow);
-        transition: transform .2s, box-shadow .2s, border-color .2s;
+        border-radius: var(--r);
+        padding: 14px 16px;
+        box-shadow: var(--shadow-sm);
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        position: relative;
+        overflow: hidden;
+    }}
+
+    div[data-testid="stMetric"]::after {{
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: radial-gradient(circle at top right, var(--accent-soft), transparent 65%);
+        opacity: 0.7;
+        pointer-events: none;
     }}
 
     div[data-testid="stMetric"]:hover {{
         transform: translateY(-2px);
-        box-shadow: 0 10px 24px var(--shadow);
+        box-shadow: var(--shadow-md);
         border-left-color: var(--purple);
     }}
 
-    [data-testid="stMetricValue"] {{
-        font-size: 1.55rem;
-        font-weight: 720;
-        color: var(--text);
-        font-variant-numeric: tabular-nums;
-        letter-spacing: -0.5px;
-    }}
-    [data-testid="stMetricDelta"] {{ font-size: .73rem; }}
     [data-testid="stMetricLabel"] {{
-        color: var(--text2);
-        font-size: .72rem;
+        color: var(--text-2) !important;
+        font-size: 10.5px !important;
+        font-weight: 700 !important;
         text-transform: uppercase;
-        letter-spacing: .06em;
-        font-weight: 600;
+        letter-spacing: 0.1em;
+        margin-bottom: 4px !important;
     }}
 
-    /* TYPOGRAPHY */
-    .eyebrow {{
-        color: var(--accent);
-        font-size: .70rem;
+    [data-testid="stMetricValue"] {{
+        color: var(--text) !important;
+        font-size: 22px !important;
+        font-weight: 720 !important;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: -0.02em;
+    }}
+
+    [data-testid="stMetricDelta"] {{
+        font-size: 11px !important;
+        font-variant-numeric: tabular-nums;
+    }}
+
+    /* SECTION HEADERS */
+    .section-eyebrow {{
+        display: inline-block;
+        font-size: 10px;
         font-weight: 750;
-        letter-spacing: .11em;
-        text-transform: uppercase;
-        margin-bottom: .25rem;
-    }}
-    .section-title {{ font-size: 1rem; font-weight: 720; margin-bottom: .1rem; color: var(--text); }}
-    .section-copy {{ color: var(--text2); font-size: .80rem; margin-bottom: .7rem; }}
-
-    /* CHECK CARDS */
-    .check-card {{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: .75rem;
-        padding: .72rem .78rem;
-        margin: .48rem 0;
-        background: var(--card-bg-2);
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        transition: border-color .15s, transform .15s;
-    }}
-    .check-card:hover {{ border-color: var(--border-hi); transform: translateX(2px); }}
-
-    .check-name {{ color: var(--text); font-size: .81rem; }}
-    .passed, .failed {{
-        min-width: 4.8rem;
-        text-align: center;
-        border-radius: 999px;
-        font-size: .68rem;
-        font-weight: 800;
-        letter-spacing: .07em;
-        padding: .25rem .5rem;
-    }}
-    .passed {{
-        color: var(--green);
-        background: var(--green-dim);
-        border: 1px solid rgba(16,185,129,.25);
-    }}
-    .failed {{
-        color: var(--red);
-        background: var(--red-dim);
-        border: 1px solid rgba(239,68,68,.3);
-    }}
-
-    /* ALERT STRIPS */
-    .alert-strip {{
-        display: flex;
-        gap: .75rem;
-        align-items: flex-start;
-        padding: .8rem 1rem;
-        margin: .2rem 0 1rem;
-        border-radius: 11px;
-        border: 1px solid rgba(239,68,68,.32);
-        background: linear-gradient(90deg, rgba(239,68,68,.12), rgba(245,158,11,.06));
-        color: #fca5a5;
-        font-size: .82rem;
-        box-shadow: 0 0 20px rgba(239,68,68,.08);
-    }}
-
-    .ok-strip {{
-        padding: .7rem .9rem;
-        margin: .2rem 0 1rem;
-        border: 1px solid rgba(16,185,129,.28);
-        background: rgba(16,185,129,.07);
-        border-radius: 11px;
-        color: #6ee7b7;
-        font-size: .80rem;
-    }}
-
-    /* BUTTONS */
-    div.stButton > button {{
-        min-height: 2.65rem;
-        border-radius: 9px;
-        border: 1px solid var(--border-hi);
-        background: var(--card-bg-2);
-        color: var(--text);
-        font-weight: 600;
-        transition: all .18s;
-    }}
-
-    div.stButton > button:hover {{
-        border-color: var(--accent);
-        color: var(--accent);
-        background: rgba(34,211,238,.08);
-        box-shadow: 0 0 16px rgba(34,211,238,.2);
-        transform: translateY(-1px);
-    }}
-
-    div.stButton > button[kind="primary"] {{
-        background: var(--accent);
-        border-color: var(--accent);
-        color: #06121a;
-        font-weight: 700;
-    }}
-
-    div.stButton > button[kind="primary"]:hover {{
-        background: #2fd8f0;
-        color: #06121a;
-        box-shadow: 0 4px 20px rgba(34,211,238,.4);
-    }}
-
-    /* INPUTS */
-    div[data-testid="stSelectbox"] > div > div {{
-        background: var(--card-bg-2);
-        border-color: var(--border-hi);
-        color: var(--text);
-    }}
-
-    div[data-testid="stTextInput"] input {{
-        background: var(--card-bg-2);
-        border-color: var(--border-hi);
-        color: var(--text);
-    }}
-
-    /* TABLES */
-    [data-testid="stDataFrame"] {{
-        border: 1px solid var(--border);
-        border-radius: 10px;
-        overflow: hidden;
-    }}
-
-    /* PROGRESS */
-    div[data-testid="stProgress"] > div > div {{
-        background: linear-gradient(90deg, var(--accent), var(--purple));
-        box-shadow: 0 0 12px rgba(34,211,238,.35);
-        border-radius: 4px;
-    }}
-
-    /* SIDEBAR */
-    [data-testid="stSidebar"] {{
-        background: var(--card-bg-1);
-        border-right: 1px solid var(--border);
-    }}
-
-    [data-testid="stSidebar"] h3 {{
-        color: var(--accent) !important;
-        font-size: .78rem !important;
-        text-transform: uppercase;
-        letter-spacing: .1em;
-        font-weight: 700;
-    }}
-
-    /* INFO CARD */
-    .info-card {{
-        background: linear-gradient(135deg, rgba(34,211,238,.08), rgba(167,139,250,.04));
-        border: 1px solid rgba(34,211,238,.22);
-        border-left: 3px solid var(--accent);
-        border-radius: 12px;
-        padding: 14px 18px;
-        margin-bottom: 14px;
-    }}
-
-    .info-card .info-label {{
-        font-size: .72rem;
-        font-weight: 750;
-        letter-spacing: .1em;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--accent);
         margin-bottom: 6px;
     }}
 
-    .info-card .info-body {{
-        font-size: .9rem;
-        line-height: 1.6;
+    .section-title {{
+        font-size: 15px;
+        font-weight: 720;
+        color: var(--text);
+        letter-spacing: -0.01em;
+        line-height: 1.25;
+        margin-bottom: 4px;
+    }}
+
+    .section-copy {{
+        font-size: 12px;
+        color: var(--text-2);
+        line-height: 1.55;
+    }}
+
+    /* CHECK CARDS */
+    .check-row {{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 11px 14px;
+        margin: 6px 0;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: var(--r-sm);
+        font-size: 12.5px;
+        color: var(--text);
+        transition: border-color 0.15s, transform 0.15s;
+    }}
+
+    .check-row:hover {{
+        border-color: var(--border-hi);
+        transform: translateX(2px);
+    }}
+
+    .chip {{
+        min-width: 72px;
+        text-align: center;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+    }}
+
+    .chip-pass {{
+        color: var(--green);
+        background: var(--green-soft);
+        border: 1px solid var(--green-glow);
+    }}
+
+    .chip-fail {{
+        color: var(--red);
+        background: var(--red-soft);
+        border: 1px solid var(--red-glow);
+    }}
+
+    /* BANNERS */
+    .banner {{
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 12px 16px;
+        border-radius: var(--r);
+        font-size: 12.5px;
+        line-height: 1.55;
+        margin: 0 0 20px;
+    }}
+
+    .banner-ok {{
+        color: var(--green);
+        background: var(--green-soft);
+        border: 1px solid var(--green-glow);
+    }}
+
+    .banner-alert {{
+        color: var(--red);
+        background: linear-gradient(90deg, var(--red-soft), var(--amber-soft));
+        border: 1px solid var(--red-glow);
+        box-shadow: 0 0 20px var(--red-soft);
+    }}
+
+    .banner strong {{ color: inherit; font-weight: 700; }}
+
+    /* VERDICT */
+    .verdict {{
+        padding: 12px 16px;
+        border-radius: var(--r);
+        background: var(--surface-2);
+        border-left: 3px solid var(--accent);
+        font-size: 12.5px;
+        color: var(--text);
+        line-height: 1.55;
+        margin-top: 16px;
+    }}
+
+    .verdict strong {{ color: var(--text); font-weight: 700; }}
+
+    /* BUTTONS */
+    div.stButton > button {{
+        min-height: 40px;
+        border-radius: var(--r-sm);
+        border: 1px solid var(--border-hi);
+        background: var(--surface-2);
+        color: var(--text);
+        font-weight: 600;
+        font-size: 13px;
+        font-family: inherit;
+        transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }}
+
+    div.stButton > button:hover {{
+        border-color: var(--accent);
+        color: var(--accent);
+        background: var(--accent-soft);
+        box-shadow: 0 0 0 3px var(--accent-soft);
+        transform: translateY(-1px);
+    }}
+
+    div.stButton > button:active {{
+        transform: translateY(0) scale(0.98);
+    }}
+
+    div.stButton > button[kind="primary"] {{
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        border-color: transparent;
+        color: #06121a;
+        font-weight: 700;
+        box-shadow: 0 0 24px var(--accent-glow);
+    }}
+
+    div.stButton > button[kind="primary"]:hover {{
+        box-shadow: 0 0 32px var(--accent-glow), 0 0 60px var(--accent-soft);
+        color: #06121a;
+        transform: translateY(-1px);
+    }}
+
+    /* INPUTS */
+    div[data-testid="stSelectbox"] > div > div,
+    div[data-baseweb="select"] > div {{
+        background-color: var(--input-bg) !important;
+        border-color: var(--input-border) !important;
+        color: var(--select-text) !important;
+        border-radius: var(--r-sm) !important;
+        min-height: 40px;
+    }}
+
+    div[data-testid="stSelectbox"] * ,
+    div[data-baseweb="select"] * {{
+        color: var(--select-text) !important;
+    }}
+
+    div[data-testid="stSelectbox"] svg,
+    div[data-baseweb="select"] svg {{
+        fill: var(--text-2) !important;
+    }}
+
+    div[data-baseweb="popover"],
+    div[data-baseweb="popover"] > div,
+    div[role="listbox"] {{
+        background-color: var(--input-bg) !important;
+        border: 1px solid var(--input-border) !important;
+        border-radius: var(--r-sm) !important;
+        box-shadow: var(--shadow-lg) !important;
+    }}
+
+    div[role="listbox"] li,
+    div[role="listbox"] [role="option"] {{
+        background-color: var(--input-bg) !important;
+        color: var(--select-text) !important;
+        font-size: 13px !important;
+    }}
+
+    div[role="listbox"] li:hover,
+    div[role="listbox"] [role="option"]:hover,
+    div[role="option"][aria-selected="true"] {{
+        background-color: var(--accent-soft) !important;
+        color: var(--accent) !important;
+    }}
+
+    div[data-testid="stTextInput"] input {{
+        background-color: var(--input-bg) !important;
+        border-color: var(--input-border) !important;
+        color: var(--select-text) !important;
+        border-radius: var(--r-sm) !important;
+        min-height: 40px;
+    }}
+
+    /* PROGRESS */
+    div[data-testid="stProgress"] {{
+        margin: 12px 0;
+    }}
+
+    div[data-testid="stProgress"] * {{
+        color: var(--text) !important;
+    }}
+
+    div[data-testid="stProgress"] p,
+    div[data-testid="stProgress"] span,
+    div[data-testid="stProgress"] div[role="progressbar"] + * {{
+        color: var(--text) !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        margin-bottom: 6px !important;
+    }}
+
+    div[data-testid="stProgress"] > div > div {{
+        background-color: var(--surface-3) !important;
+        border-radius: 6px !important;
+        height: 6px !important;
+    }}
+
+    div[data-testid="stProgress"] > div > div > div {{
+        background: linear-gradient(90deg, var(--accent), var(--purple)) !important;
+        border-radius: 6px !important;
+        box-shadow: 0 0 12px var(--accent-glow);
+        height: 6px !important;
+    }}
+
+    /* TABLES */
+    [data-testid="stDataFrame"] {{
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        overflow: hidden;
+    }}
+
+    [data-testid="stDataFrame"] * {{
+        font-family: inherit !important;
+    }}
+
+    /* DOWNLOAD BUTTON */
+    div.stDownloadButton > button {{
+        min-height: 40px;
+        border-radius: var(--r-sm);
+        border: 1px solid var(--border-hi);
+        background: var(--surface-2);
+        color: var(--text);
+        font-weight: 600;
+        font-size: 13px;
+    }}
+
+    div.stDownloadButton > button:hover {{
+        border-color: var(--green);
+        color: var(--green);
+        background: var(--green-soft);
+    }}
+
+    /* SIDEBAR */
+    [data-testid="stSidebar"] {{
+        background: var(--surface) !important;
+        border-right: 1px solid var(--border);
+    }}
+
+    [data-testid="stSidebar"] > div:first-child {{
+        padding: 24px 20px;
+    }}
+
+    [data-testid="stSidebar"] h3 {{
+        color: var(--accent) !important;
+        font-size: 10.5px !important;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-weight: 750;
+        margin: 20px 0 12px !important;
+    }}
+
+    [data-testid="stSidebar"] h3:first-child {{
+        margin-top: 0 !important;
+    }}
+
+    [data-testid="stSidebar"] * {{
         color: var(--text);
     }}
 
-    .info-card .info-foot {{
-        font-size: .78rem;
-        color: var(--text2);
-        margin-top: 10px;
+    [data-testid="stSidebar"] [data-testid="stCaptionContainer"] * {{
+        color: var(--text-3) !important;
+        font-size: 11px !important;
         line-height: 1.55;
+    }}
+
+    /* HR */
+    hr {{
+        margin: 20px 0 !important;
+        border-color: var(--border) !important;
+        opacity: 0.5;
     }}
 
     /* FOOTER */
     .fineprint {{
-        color: var(--text3);
-        font-size: .70rem;
+        color: var(--text-3);
+        font-size: 10.5px;
         text-align: center;
-        padding-top: 1.1rem;
-        letter-spacing: .05em;
+        padding-top: 32px;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+        text-transform: uppercase;
     }}
 
-    @media (max-width: 800px) {{
-        [data-testid="stAppViewContainer"] > .main .block-container {{ padding: .8rem; }}
-        .terminal-header {{ align-items: flex-start; }}
-        .brand-subtitle {{ display: none; }}
+    /* DIALOGS */
+    [data-testid="stDialog"] > div {{
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow-lg);
+    }}
+
+    [data-testid="stDialog"] * {{
+        color: var(--text);
+    }}
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {{
+        [data-testid="stAppViewContainer"] > .main .block-container {{
+            padding: 1rem;
+        }}
+        .brand-sub {{ display: none; }}
+        .term-header {{ flex-wrap: wrap; }}
     }}
 </style>
 """
@@ -450,7 +730,6 @@ def init_state() -> None:
         "last_refresh": datetime.now(timezone.utc),
         "pipeline": "Standard validation",
         "selected_algorithm": "Trend Alpha",
-        "selected_scenarios": list(REGIMES.keys()),
         "theme": "dark",
     }
     for key, value in defaults.items():
@@ -476,21 +755,21 @@ def toggle_theme() -> None:
 def risk_methodology_dialog() -> None:
     st.markdown(
         """
-        **VaR histórico 95%**
+        **VaR histórico 95%**  
         Percentil 5 de los retornos observados. Resume una pérdida diaria de cola
-        bajo la distribución sintética simulada; no representa una pérdida máxima
+        bajo la distribución sintética simulada. No representa una pérdida máxima
         garantizada.
 
-        **CVaR histórico 95%**
+        **CVaR histórico 95%**  
         Promedio de los retornos que caen por debajo del VaR. Más informativo que
         el VaR cuando la distribución tiene colas gruesas.
 
-        **Máximo drawdown**
+        **Máximo drawdown**  
         Mayor caída porcentual desde un máximo previo de la serie de precios.
 
-        **Sharpe y Sortino**
-        Métricas ajustadas por riesgo. Un Sharpe alto sobre una muestra corta es
-        con frecuencia un síntoma de sobreajuste, no de ventaja real.
+        **Sharpe y Sortino**  
+        Métricas ajustadas por riesgo. Un Sharpe alto sobre una muestra corta
+        frecuentemente es síntoma de sobreajuste, no de ventaja real.
 
         La demo usa semilla fija y reproducible. Ninguna métrica constituye
         recomendación de inversión.
@@ -502,13 +781,13 @@ def risk_methodology_dialog() -> None:
 def pipeline_dialog() -> None:
     st.markdown(
         f"""
-        **Preset de validación:** {st.session_state.pipeline}
-        **Ciclo de ejecución:** {st.session_state.refresh_cycle:04d}
-        **Datos:** sintéticos, semilla fija y reproducible
+        **Preset de validación:** {st.session_state.pipeline}  
+        **Ciclo de ejecución:** {st.session_state.refresh_cycle:04d}  
+        **Datos:** sintéticos, semilla fija y reproducible  
         **Última sincronización UTC:** {st.session_state.last_refresh:%Y-%m-%d %H:%M:%S}
 
-        Cada fila de la bitácora contiene un identificador determinístico
-        derivado del ciclo actual.
+        Cada fila de la bitácora contiene un identificador determinístico derivado
+        del ciclo actual. Refrescar produce los mismos IDs para el mismo ciclo.
         """
     )
 
@@ -521,45 +800,46 @@ def validation_cards(report: dict[str, bool]) -> str:
         "no_null_values": "Integridad / nulos",
         "volatility_within_bounds": "Drift de volatilidad",
     }
-    blocks: list[str] = []
+    rows = []
     for key, label in labels.items():
-        passed = bool(report.get(key, False))
-        blocks.append(
-            '<div class="check-card">'
-            f'<span class="check-name">{label}</span>'
-            f'<span class="{"passed" if passed else "failed"}">'
-            f'{"PASSED" if passed else "FAILED"}</span></div>'
+        ok = bool(report.get(key, False))
+        chip_cls = "chip-pass" if ok else "chip-fail"
+        chip_txt = "PASSED" if ok else "FAILED"
+        rows.append(
+            f'<div class="check-row">'
+            f'<span>{label}</span>'
+            f'<span class="chip {chip_cls}">{chip_txt}</span>'
+            f'</div>'
         )
-    return "".join(blocks)
+    return "".join(rows)
 
 
 def _plot_theme() -> dict:
-    """Return plot colors adapted to active theme."""
     if st.session_state.theme == "dark":
         return {
             "bg": "rgba(0,0,0,0)",
-            "plot_bg": "rgba(17,23,32,.5)",
-            "grid": "rgba(31,42,58,.5)",
-            "text": "#8b98a8",
-            "zero": "rgba(42,53,69,.8)",
+            "plot_bg": "rgba(15,20,28,.6)",
+            "grid": "rgba(148,163,184,.08)",
+            "text": "#94a3b8",
+            "zero": "rgba(148,163,184,.25)",
             "accent": "#22d3ee",
-            "red": "#ef4444",
+            "red": "#f43f5e",
             "green": "#10b981",
-            "heat_low": "#ef4444",
-            "heat_mid": "#111720",
+            "heat_low": "#f43f5e",
+            "heat_mid": "#131a24",
             "heat_high": "#22d3ee",
         }
     return {
         "bg": "rgba(0,0,0,0)",
-        "plot_bg": "rgba(248,250,252,.8)",
-        "grid": "rgba(148,163,184,.25)",
-        "text": "#64748b",
-        "zero": "rgba(148,163,184,.5)",
+        "plot_bg": "rgba(250,248,243,.9)",
+        "grid": "rgba(28,43,58,.06)",
+        "text": "#55657a",
+        "zero": "rgba(28,43,58,.2)",
         "accent": "#0891b2",
         "red": "#dc2626",
         "green": "#059669",
         "heat_low": "#dc2626",
-        "heat_mid": "#f6f8fb",
+        "heat_mid": "#faf8f3",
         "heat_high": "#0891b2",
     }
 
@@ -567,14 +847,15 @@ def _plot_theme() -> dict:
 def price_figure(df: pd.DataFrame, is_critical: bool) -> go.Figure:
     t = _plot_theme()
     line_color = t["red"] if is_critical else t["accent"]
+    fill_color = "rgba(244,63,94,.12)" if is_critical else "rgba(34,211,238,.1)"
     trace = go.Scatter(
         x=df["Timestamp"],
         y=df["Price"],
         mode="lines",
         name="Precio sintético",
-        line=dict(color=line_color, width=2.2),
+        line=dict(color=line_color, width=2),
         fill="tozeroy",
-        fillcolor="rgba(239,68,68,.15)" if is_critical else "rgba(34,211,238,.15)",
+        fillcolor=fill_color,
         hovertemplate="%{x|%H:%M}<br>Índice %{y:.2f}<extra></extra>",
     )
     fig = go.Figure(trace)
@@ -586,17 +867,23 @@ def price_figure(df: pd.DataFrame, is_critical: bool) -> go.Figure:
             line_dash="dot",
             annotation_text="Drift detectado",
             annotation_font_color=t["accent"],
+            annotation_font_size=10,
         )
     fig.update_layout(
-        height=320,
-        margin=dict(l=12, r=12, t=30, b=10),
+        height=300,
+        margin=dict(l=8, r=8, t=24, b=8),
         paper_bgcolor=t["bg"],
         plot_bgcolor=t["plot_bg"],
         font=dict(color=t["text"], family="Inter, system-ui, sans-serif", size=11),
         showlegend=False,
         hovermode="x unified",
-        xaxis=dict(title=None, gridcolor=t["grid"], showline=False),
-        yaxis=dict(title="Índice sintético", gridcolor=t["grid"], zeroline=False),
+        hoverlabel=dict(
+            bgcolor=t["plot_bg"],
+            bordercolor=t["accent"],
+            font=dict(color=t["text"], size=11),
+        ),
+        xaxis=dict(title=None, gridcolor=t["grid"], showline=False, zeroline=False),
+        yaxis=dict(title=None, gridcolor=t["grid"], zeroline=False),
     )
     return fig
 
@@ -607,40 +894,50 @@ def scenario_figure(results: pd.DataFrame) -> go.Figure:
     median_returns = results["Median Return"].to_numpy()
     p5 = results["P5"].to_numpy()
     p95 = results["P95"].to_numpy()
-    clamp = 0.60
+    clamp = 0.6
     upper = np.clip(p95 - median_returns, 0, clamp)
     lower = np.clip(median_returns - p5, 0, clamp)
 
     fig = go.Figure(go.Bar(
         x=results["Scenario"],
         y=results["Median Return"],
-        marker_color=colors,
+        marker=dict(
+            color=colors,
+            line=dict(width=0),
+        ),
         error_y=dict(
             type="data",
             symmetric=False,
             array=upper.tolist(),
             arrayminus=lower.tolist(),
             color=t["text"],
-            thickness=1.2,
+            thickness=1,
+            width=4,
         ),
-        hovertemplate="<b>%{x}</b><br>Mediana: %{y:.2%}<extra></extra>",
+        hovertemplate="<b>%{x}</b><br>Retorno mediano: %{y:.2%}<extra></extra>",
     ))
     fig.update_layout(
-        height=340,
-        margin=dict(l=12, r=12, t=20, b=30),
+        height=320,
+        margin=dict(l=8, r=8, t=20, b=32),
         paper_bgcolor=t["bg"],
         plot_bgcolor=t["plot_bg"],
         font=dict(color=t["text"], family="Inter, system-ui, sans-serif", size=11),
         showlegend=False,
+        bargap=0.4,
+        hoverlabel=dict(
+            bgcolor=t["plot_bg"],
+            bordercolor=t["accent"],
+            font=dict(color=t["text"], size=11),
+        ),
         yaxis=dict(
-            title="Retorno mediano anualizado",
-            tickformat=".1%",
+            title=None,
+            tickformat=".0%",
             gridcolor=t["grid"],
             zeroline=True,
             zerolinecolor=t["zero"],
-            range=[-0.60, 0.60],
+            range=[-0.6, 0.6],
         ),
-        xaxis=dict(gridcolor=t["grid"]),
+        xaxis=dict(gridcolor="rgba(0,0,0,0)"),
     )
     return fig
 
@@ -658,17 +955,26 @@ def correlation_heatmap(portfolio: pd.DataFrame) -> go.Figure:
             [1.0, t["heat_high"]],
         ],
         zmid=0,
-        zmin=-1, zmax=1,
-        colorbar=dict(title="ρ", thickness=10),
+        zmin=-1,
+        zmax=1,
+        colorbar=dict(
+            title=dict(text="ρ", font=dict(size=10, color=t["text"])),
+            thickness=8,
+            len=0.7,
+            tickfont=dict(size=9, color=t["text"]),
+        ),
         hovertemplate="%{y} ↔ %{x}<br>ρ = %{z:.2f}<extra></extra>",
+        xgap=2,
+        ygap=2,
     ))
     fig.update_layout(
-        height=380,
-        margin=dict(l=10, r=10, t=10, b=10),
+        height=360,
+        margin=dict(l=8, r=8, t=8, b=8),
         paper_bgcolor=t["bg"],
-        plot_bgcolor=t["plot_bg"],
+        plot_bgcolor=t["bg"],
         font=dict(color=t["text"], family="Inter, system-ui, sans-serif", size=10),
-        xaxis=dict(tickangle=-35),
+        xaxis=dict(tickangle=-35, side="bottom"),
+        yaxis=dict(autorange="reversed"),
     )
     return fig
 
@@ -692,26 +998,31 @@ def audit_log(cycle: int, critical: bool) -> pd.DataFrame:
     })
 
 
+# -----------------------------------------------------------------------------
+# APP
+# -----------------------------------------------------------------------------
+
 init_state()
 st.markdown(build_css(st.session_state.theme), unsafe_allow_html=True)
 
 critical = bool(st.session_state.inject_black_swan)
-status_badge = (
-    '<span class="critical-badge"><span class="pulse"></span>INCIDENTE ACTIVO</span>'
+status_html = (
+    '<span class="status-chip status-alert"><span class="status-dot"></span>INCIDENTE ACTIVO</span>'
     if critical
-    else '<span class="live-badge"><span class="pulse"></span>SISTEMA NOMINAL</span>'
+    else '<span class="status-chip status-ok"><span class="status-dot"></span>SISTEMA NOMINAL</span>'
 )
+
 st.markdown(
     f"""
-    <div class="terminal-header">
-      <div class="brand-lockup">
+    <div class="term-header">
+      <div class="brand">
         <div class="brand-mark">◈</div>
         <div>
           <div class="brand-title">VALIDATION &amp; ROBUSTNESS TERMINAL</div>
-          <div class="brand-subtitle">Capa independiente de validación para portafolios algorítmicos · Prototipo</div>
+          <div class="brand-sub">Capa independiente de validación para portafolios algorítmicos · Prototipo</div>
         </div>
       </div>
-      {status_badge}
+      {status_html}
     </div>
     """,
     unsafe_allow_html=True,
@@ -719,13 +1030,14 @@ st.markdown(
 
 st.markdown(
     """
-    <div class="info-card">
-      <div class="info-label">Qué es esto</div>
+    <div class="info-banner">
+      <div class="info-eyebrow">Qué es esto</div>
       <div class="info-body">
         Un prototipo de <b>capa independiente de validación</b> para portafolios de
         algoritmos de trading. No mide P&amp;L en vivo y no reemplaza el monitoreo
         existente. Responde una sola pregunta:
-        <b>¿cómo se comportan estas estrategias bajo escenarios que no vieron en entrenamiento?</b>
+        <b>¿cómo se comportan estas estrategias bajo escenarios que no vieron en
+        entrenamiento?</b>
       </div>
       <div class="info-foot">
         Construido con datos sintéticos. Sin conexión a brokers. No constituye
@@ -739,25 +1051,24 @@ st.markdown(
 )
 
 
+# SIDEBAR
 with st.sidebar:
-    st.markdown("### Panel de control")
-
-    theme_label = "☀  Modo claro" if st.session_state.theme == "dark" else "☾  Modo oscuro"
-    if st.button(theme_label, width="stretch", key="theme_toggle"):
+    theme_icon = "☀" if st.session_state.theme == "dark" else "☾"
+    theme_label = f"{theme_icon}  Modo {'claro' if st.session_state.theme == 'dark' else 'oscuro'}"
+    if st.button(theme_label, width="stretch", key="theme_btn"):
         toggle_theme()
         st.rerun()
 
-    st.markdown("---")
+    st.markdown("### Validación")
     preset_name = st.selectbox(
-        "Preset de validación",
+        "Preset",
         ["Standard validation", "Strict quality gate", "Scenario stress test"],
         index=0,
-        help="Distintos presets aplican distintos umbrales de validación.",
+        help="Distintos presets aplican distintos umbrales.",
     )
     st.session_state.pipeline = preset_name
 
-    st.markdown("---")
-    st.markdown("### Parámetros")
+    st.markdown("### Algoritmo")
     st.session_state.selected_algorithm = st.selectbox(
         "Algoritmo a evaluar",
         ["Trend Alpha", "Mean Reversion Beta", "Momentum Gamma",
@@ -765,9 +1076,8 @@ with st.sidebar:
         index=0,
     )
 
-    st.markdown("---")
     st.markdown("### Acciones")
-    if st.button("↻ Refrescar experimentos", width="stretch"):
+    if st.button("↻  Refrescar experimentos", width="stretch"):
         refresh_nodes()
         st.rerun()
 
@@ -776,7 +1086,7 @@ with st.sidebar:
             set_black_swan(False)
             st.rerun()
     else:
-        if st.button("⚠ Inyectar Cisne Negro", type="primary", width="stretch"):
+        if st.button("⚠  Inyectar Cisne Negro", type="primary", width="stretch"):
             set_black_swan(True)
             st.rerun()
 
@@ -787,6 +1097,7 @@ with st.sidebar:
     )
 
 
+# DATA
 df = generate_simulation_data(inject_error=critical)
 quality_report = validate_synthetic_data(df)
 passed, total, pass_rate = summarize_quality(quality_report)
@@ -795,41 +1106,48 @@ failed_checks = total - passed
 if failed_checks:
     st.markdown(
         f"""
-        <div class="alert-strip"><span>◆</span><div><b>Data drift confirmado.</b>
-        {failed_checks} regla(s) de validación fallaron. El experimento queda
-        marcado para revisión. No se ejecutan órdenes ni acciones externas.</div></div>
+        <div class="banner banner-alert">
+          <span>◆</span>
+          <div><strong>Data drift confirmado.</strong>
+          {failed_checks} regla(s) de validación fallaron. El experimento queda marcado
+          para revisión. No se ejecutan órdenes ni acciones externas.</div>
+        </div>
         """,
         unsafe_allow_html=True,
     )
 else:
     st.markdown(
-        '<div class="ok-strip">● Todos los contratos de datos están dentro de rango.</div>',
+        '<div class="banner banner-ok"><span>●</span>'
+        '<div>Todos los contratos de datos están dentro de rango.</div></div>',
         unsafe_allow_html=True,
     )
 
 
-left, right = st.columns([1.0, 1.55], gap="large")
+# SECTION 1 — VALIDATION + RISK
+left, right = st.columns([1, 1.5], gap="medium")
 
 with left:
     with st.container(border=True):
-        st.markdown('<div class="eyebrow">Contrato de datos</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-eyebrow">Contrato de datos</div>', unsafe_allow_html=True)
         st.markdown('<div class="section-title">Calidad del dataset</div>', unsafe_allow_html=True)
         st.markdown(
             f'<div class="section-copy">{len(df):,} observaciones · {total} reglas · '
             f'{"bloqueado" if failed_checks else "aprobado"}</div>',
             unsafe_allow_html=True,
         )
+        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
         st.markdown(validation_cards(quality_report), unsafe_allow_html=True)
+        st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
         st.progress(pass_rate, text=f"Cobertura validada: {pass_rate:.0%}")
 
 with right:
     with st.container(border=True):
-        top_text, top_action = st.columns([3.2, 1.0], vertical_alignment="center")
-        with top_text:
-            st.markdown('<div class="eyebrow">Motor de riesgo</div>', unsafe_allow_html=True)
+        top_a, top_b = st.columns([3.5, 1], vertical_alignment="center")
+        with top_a:
+            st.markdown('<div class="section-eyebrow">Motor de riesgo</div>', unsafe_allow_html=True)
             st.markdown('<div class="section-title">Riesgo dinámico del escenario</div>', unsafe_allow_html=True)
-        with top_action:
-            if st.button("ⓘ Metodología", width="stretch"):
+        with top_b:
+            if st.button("ⓘ  Metodología", width="stretch"):
                 risk_methodology_dialog()
 
         var_95, mdd = calculate_market_risk(
@@ -838,35 +1156,42 @@ with right:
         )
         cvar_95 = historical_cvar(df["Return"].to_numpy(), 0.95)
 
-        risk_a, risk_b, risk_c = st.columns(3)
-        risk_a.metric("VaR 95%", f"{var_95:.2%}", help="Percentil 5 de retornos sintéticos.")
-        risk_b.metric("CVaR 95%", f"{cvar_95:.2%}", help="Promedio de la cola por debajo del VaR.")
-        risk_c.metric("Máximo drawdown", f"{mdd:.2%}", help="Mayor caída desde un máximo previo.")
+        st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
+        c1, c2, c3 = st.columns(3)
+        c1.metric("VaR 95%", f"{var_95:.2%}", help="Percentil 5 de retornos sintéticos.")
+        c2.metric("CVaR 95%", f"{cvar_95:.2%}", help="Promedio de la cola por debajo del VaR.")
+        c3.metric("Máximo drawdown", f"{mdd:.2%}", help="Mayor caída desde un máximo previo.")
 
-        st.plotly_chart(price_figure(df, bool(failed_checks)),
-                        width="stretch", config={"displayModeBar": False})
+        st.plotly_chart(
+            price_figure(df, bool(failed_checks)),
+            use_container_width=True,
+            config={"displayModeBar": False},
+        )
 
 
-st.markdown("<div style='height:.55rem'></div>", unsafe_allow_html=True)
+# SECTION 2 — ROBUSTNESS
+st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
 with st.container(border=True):
-    header_a, header_b = st.columns([3.0, 1.3], vertical_alignment="center")
-    with header_a:
-        st.markdown('<div class="eyebrow">Robustez</div>', unsafe_allow_html=True)
+    h_a, h_b = st.columns([3, 1], vertical_alignment="center")
+    with h_a:
+        st.markdown('<div class="section-eyebrow">Robustez</div>', unsafe_allow_html=True)
         st.markdown(
             f'<div class="section-title">Resultados por escenario · '
             f'{st.session_state.selected_algorithm}</div>',
             unsafe_allow_html=True,
         )
         st.markdown(
-            '<div class="section-copy">Cada barra es la mediana de 100 corridas '
-            'con semilla fija. La barra de error indica el rango P5–P95.</div>',
+            '<div class="section-copy">Cada barra es la mediana de 100 corridas con '
+            'semilla fija. La barra de error indica el rango P5–P95.</div>',
             unsafe_allow_html=True,
         )
-    with header_b:
-        if st.button("↻ Recalcular", width="stretch"):
+    with h_b:
+        if st.button("↻  Recalcular", width="stretch"):
             refresh_nodes()
             st.rerun()
+
+    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 
     results = evaluate_algorithm_under_scenarios(
         algorithm_name=st.session_state.selected_algorithm,
@@ -877,56 +1202,56 @@ with st.container(border=True):
 
     st.plotly_chart(
         scenario_figure(results),
-        width="stretch",
+        use_container_width=True,
         config={"displayModeBar": False},
     )
 
     positive = (results["Median Return"] > 0).sum()
     total_s = len(results)
     if positive >= total_s - 1:
-        verdict = "Robusto bajo los escenarios evaluados."
-        verdict_color = "#10b981"
+        verdict_text = "Robusto bajo los escenarios evaluados."
+        verdict_color = "var(--green)"
     elif positive >= total_s - 2:
-        verdict = "Marginal — sensible a por lo menos un escenario."
-        verdict_color = "#f59e0b"
+        verdict_text = "Marginal — sensible a por lo menos un escenario."
+        verdict_color = "var(--amber)"
     else:
-        verdict = "Frágil — falla bajo múltiples escenarios."
-        verdict_color = "#ef4444"
+        verdict_text = "Frágil — falla bajo múltiples escenarios."
+        verdict_color = "var(--red)"
 
     st.markdown(
-        f'<div style="padding:.7rem .9rem;border-radius:10px;'
-        f'background:rgba(26,34,48,.4);border-left:3px solid {verdict_color};'
-        f'font-size:.85rem;color:var(--text);">'
-        f'<b>Clasificación:</b> {verdict} '
+        f'<div class="verdict" style="border-left-color:{verdict_color};">'
+        f'<strong>Clasificación:</strong> {verdict_text} '
         f'({positive}/{total_s} escenarios con retorno mediano positivo.)'
         f'</div>',
         unsafe_allow_html=True,
     )
 
 
-st.markdown("<div style='height:.55rem'></div>", unsafe_allow_html=True)
+# SECTION 3 — PORTFOLIO + AUDIT
+st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
-col_a, col_b = st.columns([1.15, 1.0], gap="large")
+col_a, col_b = st.columns([1.15, 1], gap="medium")
 
 with col_a:
     with st.container(border=True):
-        st.markdown('<div class="eyebrow">Portafolio</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-eyebrow">Portafolio</div>', unsafe_allow_html=True)
         st.markdown('<div class="section-title">Correlación entre algoritmos</div>', unsafe_allow_html=True)
         st.markdown(
             '<div class="section-copy">Correlación diaria sobre 750 días sintéticos. '
             'Correlaciones altas significan menor diversificación real.</div>',
             unsafe_allow_html=True,
         )
+        st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
         portfolio = generate_portfolio_returns(seed=DEFAULT_SEED)
         st.plotly_chart(
             correlation_heatmap(portfolio),
-            width="stretch",
+            use_container_width=True,
             config={"displayModeBar": False},
         )
 
 with col_b:
     with st.container(border=True):
-        st.markdown('<div class="eyebrow">Trazabilidad</div>', unsafe_allow_html=True)
+        st.markdown('<div class="section-eyebrow">Trazabilidad</div>', unsafe_allow_html=True)
         st.markdown('<div class="section-title">Bitácora de experimentos</div>', unsafe_allow_html=True)
         st.markdown(
             f'<div class="section-copy">Última sincronización UTC: '
@@ -934,13 +1259,20 @@ with col_b:
             f'ciclo {st.session_state.refresh_cycle:04d}</div>',
             unsafe_allow_html=True,
         )
+        st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+
         if st.button("Ver detalle", width="stretch"):
             pipeline_dialog()
 
         audit_df = audit_log(st.session_state.refresh_cycle, bool(failed_checks))
-        st.dataframe(audit_df, width="stretch", hide_index=True)
+        st.dataframe(
+            audit_df,
+            use_container_width=True,
+            hide_index=True,
+            height=180,
+        )
         st.download_button(
-            "⤓ Descargar CSV de trazabilidad",
+            "⤓  Descargar CSV de trazabilidad",
             data=audit_df.to_csv(index=False).encode("utf-8"),
             file_name=f"trace_cycle_{st.session_state.refresh_cycle:04d}.csv",
             mime="text/csv",
@@ -948,23 +1280,26 @@ with col_b:
         )
 
 
-st.markdown("<div style='height:.55rem'></div>", unsafe_allow_html=True)
+# SECTION 4 — REPORT
+st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
 with st.container(border=True):
-    st.markdown('<div class="eyebrow">Reporte</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-eyebrow">Reporte</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-title">Generar reporte de validación (PDF)</div>', unsafe_allow_html=True)
     st.markdown(
         '<div class="section-copy">Documento de 6 secciones con ficha, configuración, '
         'resultados por escenario, clasificación de robustez, limitaciones y trazabilidad.</div>',
         unsafe_allow_html=True,
     )
-    report_col_a, report_col_b = st.columns([2.0, 1.0], vertical_alignment="bottom")
-    with report_col_a:
+    st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
+
+    r_a, r_b = st.columns([2, 1], vertical_alignment="bottom")
+    with r_a:
         report_algorithm = st.text_input(
             "Algoritmo a reportar",
             value=st.session_state.selected_algorithm,
         )
-    with report_col_b:
+    with r_b:
         generate_clicked = st.button("Generar PDF", type="primary", width="stretch")
 
     if generate_clicked:
@@ -977,8 +1312,9 @@ with st.container(border=True):
                 generator_version="RegimeSim v0.3",
                 approved_by="—",
             )
+            st.markdown("<div style='height:10px'></div>", unsafe_allow_html=True)
             st.download_button(
-                "⤓ Descargar reporte PDF",
+                "⤓  Descargar reporte PDF",
                 data=pdf_bytes,
                 file_name=f"validation_report_{report_algorithm.replace(' ', '_')}.pdf",
                 mime="application/pdf",
@@ -991,7 +1327,7 @@ with st.container(border=True):
 
 st.markdown(
     '<div class="fineprint">'
-    'PROTOTIPO · DATOS SINTÉTICOS · NO EJECUTA ÓRDENES · NO CONSTITUYE ASESORÍA FINANCIERA'
+    'Prototipo · Datos sintéticos · No ejecuta órdenes · No constituye asesoría financiera'
     '</div>',
     unsafe_allow_html=True,
 )
