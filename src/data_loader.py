@@ -36,10 +36,12 @@ def generate_simulation_data(
     base_vol = 0.008
 
     # Occasional regime shifts — small probability of higher volatility.
+    # Kept modest so that the "normal" simulation doesn't produce
+    # implausible drawdowns.
     regime = np.ones(n_observations)
-    switch_points = rng.choice(n_observations, size=max(3, n_observations // 120), replace=False)
+    switch_points = rng.choice(n_observations, size=max(2, n_observations // 200), replace=False)
     for point in switch_points:
-        regime[point:] = rng.uniform(1.2, 2.4)
+        regime[point:] = rng.uniform(1.1, 1.5)
 
     returns = rng.normal(base_return, base_vol, n_observations) * regime
 
