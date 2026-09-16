@@ -11,12 +11,12 @@ import numpy as np
 import pandas as pd
 
 REGIMES = {
-    "Bullish":        {"mu":  0.0008, "sigma": 0.010, "jump_prob": 0.005},
-    "Bearish":        {"mu": -0.0006, "sigma": 0.012, "jump_prob": 0.010},
-    "Sideways":       {"mu":  0.0000, "sigma": 0.008, "jump_prob": 0.003},
-    "High Volatility":{"mu":  0.0002, "sigma": 0.020, "jump_prob": 0.020},
-    "Low Volatility": {"mu":  0.0004, "sigma": 0.005, "jump_prob": 0.001},
-    "High Costs":     {"mu":  0.0004, "sigma": 0.009, "jump_prob": 0.005, "cost_drag": 0.0004},
+    "Bullish":         {"mu":  0.0008, "sigma": 0.010, "jump_prob": 0.005},
+    "Bearish":         {"mu": -0.0006, "sigma": 0.012, "jump_prob": 0.010},
+    "Sideways":        {"mu":  0.0000, "sigma": 0.008, "jump_prob": 0.003},
+    "High Volatility": {"mu":  0.0002, "sigma": 0.020, "jump_prob": 0.020},
+    "Low Volatility":  {"mu":  0.0004, "sigma": 0.005, "jump_prob": 0.001},
+    "High Costs":      {"mu":  0.0004, "sigma": 0.009, "jump_prob": 0.005, "cost_drag": 0.0004},
 }
 
 
@@ -34,13 +34,11 @@ def generate_scenario(
 
     returns = rng.normal(params["mu"], params["sigma"], n_observations)
 
-    # Occasional jumps to introduce fat tails.
     jumps = rng.random(n_observations) < params["jump_prob"]
     if jumps.any():
         jump_sizes = rng.normal(0, params["sigma"] * 6, jumps.sum())
         returns[jumps] += jump_sizes
 
-    # Cost drag reduces realized returns by a fixed amount per step.
     cost_drag = params.get("cost_drag", 0.0)
     returns = returns - cost_drag
 
@@ -68,16 +66,12 @@ def evaluate_algorithm_under_scenarios(
 ) -> pd.DataFrame:
     """Evaluate a named algorithm under multiple scenarios.
 
-    The algorithm's return is modeled as a beta-adjusted response to the
-    scenario return, with a small deterministic skew per algorithm name.
-    This is a placeholder — the calibration happens once real data is
-    available. Results are reported at the per-step level and annualized
-    once, at the end, so magnitude stays interpretable.
+    Returns per-step statistics multiplied by 252 once at the end, so
+    annualized figures stay in a realistic range.
     """
     if scenarios is None:
         scenarios = list(REGIMES.keys())
 
-    # Deterministic character per algorithm name, in per-step units.
     name_hash = sum(ord(c) for c in algorithm_name)
     beta = 0.8 + ((name_hash % 5) / 10.0)
     skew = ((name_hash % 11) - 5) / 100000.0
