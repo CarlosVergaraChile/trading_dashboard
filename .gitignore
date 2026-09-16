@@ -30,11 +30,19 @@ Thumbs.db
 # Notebooks
 .ipynb_checkpoints/
 
-# Data (never commit real client data)
+# Data — never commit client or trade data
 data/
-*.csv
 *.parquet
-!data_sample/*.csv
+*.pkl
+*.h5
+*.db
+*.sqlite
+
+# But allow sample data explicitly
+!data_sample/
+!data_sample/**
+!**/sample_*.csv
+!**/example_*.csv
 
 # Logs
 *.log
