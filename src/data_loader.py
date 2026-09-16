@@ -38,8 +38,12 @@ def generate_simulation_data(
     # Occasional regime shifts — small probability of higher volatility.
     # Kept modest so that the "normal" simulation doesn't produce
     # implausible drawdowns.
-      regime = np.ones(n_observations)
-    switch_points = rng.choice(n_observations, size=max(2, n_observations // 200), replace=False)
+    regime = np.ones(n_observations)
+    switch_points = rng.choice(
+        n_observations,
+        size=max(2, n_observations // 200),
+        replace=False,
+    )
     for point in switch_points:
         regime[point:] = rng.uniform(1.1, 1.5)
 
@@ -77,19 +81,9 @@ def generate_portfolio_returns(
     analysis (correlation, robustness, attribution) has something to work
     with. This is intentionally not calibrated to any real strategy — it
     is a demo dataset.
-
-    Args:
-        n_observations: number of daily observations (~3 years).
-        n_algorithms: number of algorithms to simulate.
-        seed: random seed.
-
-    Returns:
-        DataFrame with one column per algorithm and a DatetimeIndex.
     """
     rng = np.random.default_rng(seed)
 
-    # Distinct profiles: trend, mean-reversion, momentum, defensive,
-    # volatility, and a residual "other" bucket.
     profiles = [
         {"name": "Trend Alpha",        "mu": 0.0006, "sigma": 0.009, "autocorr": 0.10},
         {"name": "Mean Reversion Beta","mu": 0.0003, "sigma": 0.007, "autocorr": -0.15},
@@ -99,11 +93,14 @@ def generate_portfolio_returns(
         {"name": "Macro Zeta",         "mu": 0.0005, "sigma": 0.010, "autocorr": 0.08},
     ][:n_algorithms]
 
-    dates = pd.date_range(end=pd.Timestamp.now().normalize(), periods=n_observations, freq="D")
+    dates = pd.date_range(
+        end=pd.Timestamp.now().normalize(),
+        periods=n_observations,
+        freq="D",
+    )
     data: dict[str, np.ndarray] = {}
 
     for profile in profiles:
-        # Simple AR(1) to introduce autocorrelation structure.
         rho = profile["autocorr"]
         eps = rng.normal(0, profile["sigma"], n_observations)
         series = np.zeros(n_observations)
@@ -115,7 +112,6 @@ def generate_portfolio_returns(
     df = pd.DataFrame(data, index=dates)
     df.index.name = "Date"
 
-    # Benchmark: a broad, low-vol series correlated to the aggregate.
     aggregate = df.mean(axis=1)
     benchmark = 0.6 * aggregate + 0.4 * rng.normal(0.0004, 0.008, n_observations)
     df["Global Market Index"] = benchmark
