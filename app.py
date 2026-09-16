@@ -1,4 +1,8 @@
-"""Validation & Robustness Terminal."""
+"""Validation & Robustness Terminal.
+
+Independent validation layer for algorithmic trading portfolios.
+Synthetic data only. No broker connection. No investment advice.
+"""
 
 from __future__ import annotations
 
@@ -37,54 +41,101 @@ st.set_page_config(
     menu_items={
         "Get help": None,
         "Report a Bug": None,
-        "About": "Prototype of an independent validation layer for algorithmic trading portfolios. Synthetic data only.",
+        "About": "Independent validation layer for algorithmic trading portfolios. Synthetic data only.",
     },
 )
 
 
-CSS = """
-<style>
-    :root {
-        --bg: #0a0e14;
-        --bg2: #111720;
-        --bg3: #1a2230;
-        --border: #1f2a3a;
-        --border-hi: #2a3545;
-        --text: #e6edf3;
-        --text2: #8b98a8;
-        --text3: #5a6675;
-        --accent: #22d3ee;
-        --green: #10b981;
-        --green-dim: rgba(16, 185, 129, .12);
-        --red: #ef4444;
-        --red-dim: rgba(239, 68, 68, .12);
-        --amber: #f59e0b;
-        --purple: #a78bfa;
-    }
+def build_css(theme: str) -> str:
+    """Return CSS adapted to the active theme."""
+    if theme == "dark":
+        vars_block = """
+            --bg: #0a0e14;
+            --bg2: #111720;
+            --bg3: #1a2230;
+            --border: #1f2a3a;
+            --border-hi: #2a3545;
+            --text: #e6edf3;
+            --text2: #8b98a8;
+            --text3: #5a6675;
+            --accent: #22d3ee;
+            --green: #10b981;
+            --green-dim: rgba(16, 185, 129, .12);
+            --red: #ef4444;
+            --red-dim: rgba(239, 68, 68, .12);
+            --amber: #f59e0b;
+            --amber-dim: rgba(245, 158, 11, .12);
+            --purple: #a78bfa;
+            --card-bg-1: rgba(22,29,40,.95);
+            --card-bg-2: rgba(17,23,32,.92);
+            --metric-bg-1: rgba(26,34,48,.9);
+            --metric-bg-2: rgba(17,23,32,.85);
+            --plot-bg: rgba(17,23,32,.5);
+            --shadow: rgba(0,0,0,.25);
+            --app-bg: #0a0e14;
+            --app-gradient-1: rgba(34,211,238,.06);
+            --app-gradient-2: rgba(167,139,250,.05);
+        """
+    else:
+        vars_block = """
+            --bg: #f6f8fb;
+            --bg2: #ffffff;
+            --bg3: #eef2f7;
+            --border: #e2e8f0;
+            --border-hi: #cbd5e1;
+            --text: #0f172a;
+            --text2: #64748b;
+            --text3: #94a3b8;
+            --accent: #0891b2;
+            --green: #059669;
+            --green-dim: rgba(5, 150, 105, .1);
+            --red: #dc2626;
+            --red-dim: rgba(220, 38, 38, .1);
+            --amber: #d97706;
+            --amber-dim: rgba(217, 119, 6, .1);
+            --purple: #7c3aed;
+            --card-bg-1: rgba(255,255,255,.98);
+            --card-bg-2: rgba(248,250,252,.95);
+            --metric-bg-1: rgba(255,255,255,.98);
+            --metric-bg-2: rgba(248,250,252,.95);
+            --plot-bg: rgba(248,250,252,.8);
+            --shadow: rgba(15,23,42,.06);
+            --app-bg: #f6f8fb;
+            --app-gradient-1: rgba(8,145,178,.05);
+            --app-gradient-2: rgba(124,58,237,.04);
+        """
 
-    .stApp {
-        background: #0a0e14;
+    return f"""
+<style>
+    :root {{
+{vars_block}
+    }}
+
+    .stApp {{
+        background: var(--app-bg);
         background-image:
-            radial-gradient(900px 400px at 0% 0%, rgba(34,211,238,.06), transparent 60%),
-            radial-gradient(700px 500px at 100% 0%, rgba(167,139,250,.05), transparent 55%);
+            radial-gradient(900px 400px at 0% 0%, var(--app-gradient-1), transparent 60%),
+            radial-gradient(700px 500px at 100% 0%, var(--app-gradient-2), transparent 55%);
         background-attachment: fixed;
         color: var(--text);
-    }
+        transition: background .3s ease, color .3s ease;
+    }}
 
-    [data-testid="stHeader"], [data-testid="stToolbar"], #MainMenu, footer {
+    [data-testid="stHeader"], [data-testid="stToolbar"], #MainMenu, footer {{
         visibility: hidden;
         height: 0;
-    }
+    }}
 
-    [data-testid="stAppViewContainer"] > .main .block-container {
+    [data-testid="stAppViewContainer"] > .main .block-container {{
         max-width: 1480px;
         padding: 1.15rem 2rem 2.4rem;
-    }
+    }}
 
-    h1, h2, h3, p, label, [data-testid="stMetricLabel"] { color: var(--text); }
-    [data-testid="stCaptionContainer"], .stCaption { color: var(--text2); }
+    h1, h2, h3, p, label, [data-testid="stMetricLabel"] {{ color: var(--text); }}
+    [data-testid="stCaptionContainer"], .stCaption {{ color: var(--text2); }}
 
-    .terminal-header {
+    /* HEADER */
+    .terminal-header {{
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -92,10 +143,10 @@ CSS = """
         margin: .15rem 0 1rem;
         padding-bottom: .9rem;
         border-bottom: 1px solid var(--border);
-    }
+    }}
 
-    .brand-lockup { display: flex; align-items: center; gap: .85rem; }
-    .brand-mark {
+    .brand-lockup {{ display: flex; align-items: center; gap: .85rem; }}
+    .brand-mark {{
         display: grid;
         place-items: center;
         width: 2.6rem;
@@ -107,12 +158,12 @@ CSS = """
         box-shadow: 0 0 22px rgba(34,211,238,.18);
         font-size: 1.35rem;
         font-weight: 700;
-    }
+    }}
 
-    .brand-title { font-size: 1.08rem; font-weight: 750; letter-spacing: .035em; color: var(--text); }
-    .brand-subtitle { color: var(--text2); font-size: .78rem; margin-top: .1rem; }
+    .brand-title {{ font-size: 1.08rem; font-weight: 750; letter-spacing: .035em; color: var(--text); }}
+    .brand-subtitle {{ color: var(--text2); font-size: .78rem; margin-top: .1rem; }}
 
-    .live-badge, .critical-badge {
+    .live-badge, .critical-badge {{
         display: inline-flex;
         align-items: center;
         gap: .45rem;
@@ -122,88 +173,109 @@ CSS = """
         letter-spacing: .08em;
         font-weight: 750;
         white-space: nowrap;
-    }
+    }}
 
-    .live-badge {
+    .live-badge {{
         color: var(--green);
         background: var(--green-dim);
         border: 1px solid rgba(16,185,129,.32);
         box-shadow: 0 0 12px rgba(16,185,129,.15);
-    }
+    }}
 
-    .critical-badge {
+    .critical-badge {{
         color: var(--red);
         background: var(--red-dim);
         border: 1px solid rgba(239,68,68,.34);
         box-shadow: 0 0 12px rgba(239,68,68,.2);
-    }
+    }}
 
-    .pulse {
+    .pulse {{
         width: .45rem;
         height: .45rem;
         border-radius: 50%;
         background: currentColor;
         box-shadow: 0 0 0 0 currentColor;
         animation: pulse 1.8s infinite;
-    }
-    @keyframes pulse { 70% { box-shadow: 0 0 0 7px transparent; } }
+    }}
+    @keyframes pulse {{ 70% {{ box-shadow: 0 0 0 7px transparent; }} }}
 
-    [data-testid="stVerticalBlockBorderWrapper"] {
-        background: linear-gradient(145deg, rgba(22,29,40,.95), rgba(17,23,32,.92));
+    /* CARDS */
+    [data-testid="stVerticalBlockBorderWrapper"] {{
+        background: linear-gradient(145deg, var(--card-bg-1), var(--card-bg-2));
         border: 1px solid var(--border) !important;
         border-radius: 14px;
-        box-shadow: 0 14px 34px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.02);
-    }
+        box-shadow: 0 14px 34px var(--shadow), inset 0 1px 0 rgba(255,255,255,.02);
+        transition: border-color .2s, box-shadow .2s, transform .2s;
+    }}
 
-    div[data-testid="stMetric"] {
-        background: linear-gradient(145deg, rgba(26,34,48,.9), rgba(17,23,32,.85));
+    [data-testid="stVerticalBlockBorderWrapper"]:hover {{
+        border-color: var(--border-hi) !important;
+        box-shadow: 0 18px 40px var(--shadow), inset 0 1px 0 rgba(255,255,255,.03);
+        transform: translateY(-1px);
+    }}
+
+    /* METRICS */
+    div[data-testid="stMetric"] {{
+        background: linear-gradient(145deg, var(--metric-bg-1), var(--metric-bg-2));
         border: 1px solid var(--border);
         border-left: 3px solid var(--accent);
         border-radius: 12px;
         padding: .85rem 1rem;
-        box-shadow: 0 4px 12px rgba(0,0,0,.25);
-    }
+        box-shadow: 0 4px 12px var(--shadow);
+        transition: transform .2s, box-shadow .2s, border-color .2s;
+    }}
 
-    [data-testid="stMetricValue"] {
+    div[data-testid="stMetric"]:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px var(--shadow);
+        border-left-color: var(--purple);
+    }}
+
+    [data-testid="stMetricValue"] {{
         font-size: 1.55rem;
         font-weight: 720;
         color: var(--text);
         font-variant-numeric: tabular-nums;
-    }
-    [data-testid="stMetricLabel"] {
+        letter-spacing: -0.5px;
+    }}
+    [data-testid="stMetricDelta"] {{ font-size: .73rem; }}
+    [data-testid="stMetricLabel"] {{
         color: var(--text2);
         font-size: .72rem;
         text-transform: uppercase;
         letter-spacing: .06em;
         font-weight: 600;
-    }
+    }}
 
-    .eyebrow {
+    /* TYPOGRAPHY */
+    .eyebrow {{
         color: var(--accent);
         font-size: .70rem;
         font-weight: 750;
         letter-spacing: .11em;
         text-transform: uppercase;
         margin-bottom: .25rem;
-    }
+    }}
+    .section-title {{ font-size: 1rem; font-weight: 720; margin-bottom: .1rem; color: var(--text); }}
+    .section-copy {{ color: var(--text2); font-size: .80rem; margin-bottom: .7rem; }}
 
-    .section-title { font-size: 1rem; font-weight: 720; margin-bottom: .1rem; color: var(--text); }
-    .section-copy { color: var(--text2); font-size: .80rem; margin-bottom: .7rem; }
-
-    .check-card {
+    /* CHECK CARDS */
+    .check-card {{
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: .75rem;
         padding: .72rem .78rem;
         margin: .48rem 0;
-        background: rgba(26,34,48,.6);
+        background: var(--card-bg-2);
         border: 1px solid var(--border);
         border-radius: 10px;
-    }
+        transition: border-color .15s, transform .15s;
+    }}
+    .check-card:hover {{ border-color: var(--border-hi); transform: translateX(2px); }}
 
-    .check-name { color: var(--text); font-size: .81rem; }
-    .passed, .failed {
+    .check-name {{ color: var(--text); font-size: .81rem; }}
+    .passed, .failed {{
         min-width: 4.8rem;
         text-align: center;
         border-radius: 999px;
@@ -211,19 +283,20 @@ CSS = """
         font-weight: 800;
         letter-spacing: .07em;
         padding: .25rem .5rem;
-    }
-    .passed {
+    }}
+    .passed {{
         color: var(--green);
         background: var(--green-dim);
         border: 1px solid rgba(16,185,129,.25);
-    }
-    .failed {
+    }}
+    .failed {{
         color: var(--red);
         background: var(--red-dim);
         border: 1px solid rgba(239,68,68,.3);
-    }
+    }}
 
-    .alert-strip {
+    /* ALERT STRIPS */
+    .alert-strip {{
         display: flex;
         gap: .75rem;
         align-items: flex-start;
@@ -234,9 +307,10 @@ CSS = """
         background: linear-gradient(90deg, rgba(239,68,68,.12), rgba(245,158,11,.06));
         color: #fca5a5;
         font-size: .82rem;
-    }
+        box-shadow: 0 0 20px rgba(239,68,68,.08);
+    }}
 
-    .ok-strip {
+    .ok-strip {{
         padding: .7rem .9rem;
         margin: .2rem 0 1rem;
         border: 1px solid rgba(16,185,129,.28);
@@ -244,80 +318,129 @@ CSS = """
         border-radius: 11px;
         color: #6ee7b7;
         font-size: .80rem;
-    }
+    }}
 
-    div.stButton > button {
+    /* BUTTONS */
+    div.stButton > button {{
         min-height: 2.65rem;
         border-radius: 9px;
         border: 1px solid var(--border-hi);
-        background: rgba(26,34,48,.7);
+        background: var(--card-bg-2);
         color: var(--text);
         font-weight: 600;
         transition: all .18s;
-    }
+    }}
 
-    div.stButton > button:hover {
+    div.stButton > button:hover {{
         border-color: var(--accent);
         color: var(--accent);
         background: rgba(34,211,238,.08);
         box-shadow: 0 0 16px rgba(34,211,238,.2);
-    }
+        transform: translateY(-1px);
+    }}
 
-    div.stButton > button[kind="primary"] {
+    div.stButton > button[kind="primary"] {{
         background: var(--accent);
         border-color: var(--accent);
         color: #06121a;
         font-weight: 700;
-    }
+    }}
 
-    div[data-testid="stSelectbox"] > div > div {
-        background: rgba(26,34,48,.7);
+    div.stButton > button[kind="primary"]:hover {{
+        background: #2fd8f0;
+        color: #06121a;
+        box-shadow: 0 4px 20px rgba(34,211,238,.4);
+    }}
+
+    /* INPUTS */
+    div[data-testid="stSelectbox"] > div > div {{
+        background: var(--card-bg-2);
         border-color: var(--border-hi);
         color: var(--text);
-    }
+    }}
 
-    div[data-testid="stTextInput"] input {
-        background: rgba(26,34,48,.7);
+    div[data-testid="stTextInput"] input {{
+        background: var(--card-bg-2);
         border-color: var(--border-hi);
         color: var(--text);
-    }
+    }}
 
-    [data-testid="stDataFrame"] {
+    /* TABLES */
+    [data-testid="stDataFrame"] {{
         border: 1px solid var(--border);
         border-radius: 10px;
         overflow: hidden;
-    }
+    }}
 
-    [data-testid="stSidebar"] {
-        background: rgba(17,23,32,.95);
+    /* PROGRESS */
+    div[data-testid="stProgress"] > div > div {{
+        background: linear-gradient(90deg, var(--accent), var(--purple));
+        box-shadow: 0 0 12px rgba(34,211,238,.35);
+        border-radius: 4px;
+    }}
+
+    /* SIDEBAR */
+    [data-testid="stSidebar"] {{
+        background: var(--card-bg-1);
         border-right: 1px solid var(--border);
-    }
+    }}
 
-    [data-testid="stSidebar"] h3 {
+    [data-testid="stSidebar"] h3 {{
         color: var(--accent) !important;
         font-size: .78rem !important;
         text-transform: uppercase;
         letter-spacing: .1em;
         font-weight: 700;
-    }
+    }}
 
-    .fineprint {
+    /* INFO CARD */
+    .info-card {{
+        background: linear-gradient(135deg, rgba(34,211,238,.08), rgba(167,139,250,.04));
+        border: 1px solid rgba(34,211,238,.22);
+        border-left: 3px solid var(--accent);
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 14px;
+    }}
+
+    .info-card .info-label {{
+        font-size: .72rem;
+        font-weight: 750;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 6px;
+    }}
+
+    .info-card .info-body {{
+        font-size: .9rem;
+        line-height: 1.6;
+        color: var(--text);
+    }}
+
+    .info-card .info-foot {{
+        font-size: .78rem;
+        color: var(--text2);
+        margin-top: 10px;
+        line-height: 1.55;
+    }}
+
+    /* FOOTER */
+    .fineprint {{
         color: var(--text3);
         font-size: .70rem;
         text-align: center;
         padding-top: 1.1rem;
         letter-spacing: .05em;
-    }
+    }}
 
-    @media (max-width: 800px) {
-        [data-testid="stAppViewContainer"] > .main .block-container { padding: .8rem; }
-        .terminal-header { align-items: flex-start; }
-        .brand-subtitle { display: none; }
-    }
+    @media (max-width: 800px) {{
+        [data-testid="stAppViewContainer"] > .main .block-container {{ padding: .8rem; }}
+        .terminal-header {{ align-items: flex-start; }}
+        .brand-subtitle {{ display: none; }}
+    }}
 </style>
 """
-
-st.markdown(CSS, unsafe_allow_html=True)
 
 
 def init_state() -> None:
@@ -328,6 +451,7 @@ def init_state() -> None:
         "pipeline": "Standard validation",
         "selected_algorithm": "Trend Alpha",
         "selected_scenarios": list(REGIMES.keys()),
+        "theme": "dark",
     }
     for key, value in defaults.items():
         if key not in st.session_state:
@@ -344,23 +468,27 @@ def refresh_nodes() -> None:
     st.session_state.last_refresh = datetime.now(timezone.utc)
 
 
+def toggle_theme() -> None:
+    st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
+
+
 @st.dialog("Metodología de riesgo")
 def risk_methodology_dialog() -> None:
     st.markdown(
         """
-        **VaR histórico 95%**  
+        **VaR histórico 95%**
         Percentil 5 de los retornos observados. Resume una pérdida diaria de cola
         bajo la distribución sintética simulada; no representa una pérdida máxima
         garantizada.
 
-        **CVaR histórico 95%**  
+        **CVaR histórico 95%**
         Promedio de los retornos que caen por debajo del VaR. Más informativo que
         el VaR cuando la distribución tiene colas gruesas.
 
-        **Máximo drawdown**  
+        **Máximo drawdown**
         Mayor caída porcentual desde un máximo previo de la serie de precios.
 
-        **Sharpe y Sortino**  
+        **Sharpe y Sortino**
         Métricas ajustadas por riesgo. Un Sharpe alto sobre una muestra corta es
         con frecuencia un síntoma de sobreajuste, no de ventaja real.
 
@@ -374,12 +502,12 @@ def risk_methodology_dialog() -> None:
 def pipeline_dialog() -> None:
     st.markdown(
         f"""
-        **Preset de validación:** {st.session_state.pipeline}  
-        **Ciclo de ejecución:** {st.session_state.refresh_cycle:04d}  
-        **Datos:** sintéticos, semilla fija y reproducible  
+        **Preset de validación:** {st.session_state.pipeline}
+        **Ciclo de ejecución:** {st.session_state.refresh_cycle:04d}
+        **Datos:** sintéticos, semilla fija y reproducible
         **Última sincronización UTC:** {st.session_state.last_refresh:%Y-%m-%d %H:%M:%S}
 
-        Cada fila de la bitácora inferior contiene un identificador determinístico
+        Cada fila de la bitácora contiene un identificador determinístico
         derivado del ciclo actual.
         """
     )
@@ -405,8 +533,40 @@ def validation_cards(report: dict[str, bool]) -> str:
     return "".join(blocks)
 
 
+def _plot_theme() -> dict:
+    """Return plot colors adapted to active theme."""
+    if st.session_state.theme == "dark":
+        return {
+            "bg": "rgba(0,0,0,0)",
+            "plot_bg": "rgba(17,23,32,.5)",
+            "grid": "rgba(31,42,58,.5)",
+            "text": "#8b98a8",
+            "zero": "rgba(42,53,69,.8)",
+            "accent": "#22d3ee",
+            "red": "#ef4444",
+            "green": "#10b981",
+            "heat_low": "#ef4444",
+            "heat_mid": "#111720",
+            "heat_high": "#22d3ee",
+        }
+    return {
+        "bg": "rgba(0,0,0,0)",
+        "plot_bg": "rgba(248,250,252,.8)",
+        "grid": "rgba(148,163,184,.25)",
+        "text": "#64748b",
+        "zero": "rgba(148,163,184,.5)",
+        "accent": "#0891b2",
+        "red": "#dc2626",
+        "green": "#059669",
+        "heat_low": "#dc2626",
+        "heat_mid": "#f6f8fb",
+        "heat_high": "#0891b2",
+    }
+
+
 def price_figure(df: pd.DataFrame, is_critical: bool) -> go.Figure:
-    line_color = "#ef4444" if is_critical else "#22d3ee"
+    t = _plot_theme()
+    line_color = t["red"] if is_critical else t["accent"]
     trace = go.Scatter(
         x=df["Timestamp"],
         y=df["Price"],
@@ -422,30 +582,28 @@ def price_figure(df: pd.DataFrame, is_critical: bool) -> go.Figure:
         event_time = df.loc[df["Return"].abs().idxmax(), "Timestamp"]
         fig.add_vline(
             x=event_time.timestamp() * 1000,
-            line_color="#f59e0b",
+            line_color=t["accent"],
             line_dash="dot",
             annotation_text="Drift detectado",
-            annotation_font_color="#f59e0b",
+            annotation_font_color=t["accent"],
         )
     fig.update_layout(
         height=320,
         margin=dict(l=12, r=12, t=30, b=10),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(17,23,32,.5)",
-        font=dict(color="#8b98a8", family="Inter, system-ui, sans-serif", size=11),
+        paper_bgcolor=t["bg"],
+        plot_bgcolor=t["plot_bg"],
+        font=dict(color=t["text"], family="Inter, system-ui, sans-serif", size=11),
         showlegend=False,
         hovermode="x unified",
-        xaxis=dict(title=None, gridcolor="rgba(31,42,58,.5)", showline=False),
-        yaxis=dict(title="Índice sintético", gridcolor="rgba(31,42,58,.5)", zeroline=False),
+        xaxis=dict(title=None, gridcolor=t["grid"], showline=False),
+        yaxis=dict(title="Índice sintético", gridcolor=t["grid"], zeroline=False),
     )
     return fig
 
 
 def scenario_figure(results: pd.DataFrame) -> go.Figure:
-    colors = [
-        "#10b981" if v > 0 else "#ef4444"
-        for v in results["Median Return"]
-    ]
+    t = _plot_theme()
+    colors = [t["green"] if v > 0 else t["red"] for v in results["Median Return"]]
     median_returns = results["Median Return"].to_numpy()
     p5 = results["P5"].to_numpy()
     p95 = results["P95"].to_numpy()
@@ -462,7 +620,7 @@ def scenario_figure(results: pd.DataFrame) -> go.Figure:
             symmetric=False,
             array=upper.tolist(),
             arrayminus=lower.tolist(),
-            color="#8b98a8",
+            color=t["text"],
             thickness=1.2,
         ),
         hovertemplate="<b>%{x}</b><br>Mediana: %{y:.2%}<extra></extra>",
@@ -470,33 +628,34 @@ def scenario_figure(results: pd.DataFrame) -> go.Figure:
     fig.update_layout(
         height=340,
         margin=dict(l=12, r=12, t=20, b=30),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(17,23,32,.5)",
-        font=dict(color="#8b98a8", family="Inter, system-ui, sans-serif", size=11),
+        paper_bgcolor=t["bg"],
+        plot_bgcolor=t["plot_bg"],
+        font=dict(color=t["text"], family="Inter, system-ui, sans-serif", size=11),
         showlegend=False,
         yaxis=dict(
             title="Retorno mediano anualizado",
             tickformat=".1%",
-            gridcolor="rgba(31,42,58,.5)",
+            gridcolor=t["grid"],
             zeroline=True,
-            zerolinecolor="rgba(42,53,69,.8)",
+            zerolinecolor=t["zero"],
             range=[-0.60, 0.60],
         ),
-        xaxis=dict(gridcolor="rgba(31,42,58,.5)"),
+        xaxis=dict(gridcolor=t["grid"]),
     )
     return fig
 
 
 def correlation_heatmap(portfolio: pd.DataFrame) -> go.Figure:
+    t = _plot_theme()
     corr = portfolio.corr()
     fig = go.Figure(go.Heatmap(
         z=corr.values,
         x=corr.columns.tolist(),
         y=corr.index.tolist(),
         colorscale=[
-            [0.0, "#ef4444"],
-            [0.5, "#111720"],
-            [1.0, "#22d3ee"],
+            [0.0, t["heat_low"]],
+            [0.5, t["heat_mid"]],
+            [1.0, t["heat_high"]],
         ],
         zmid=0,
         zmin=-1, zmax=1,
@@ -506,9 +665,9 @@ def correlation_heatmap(portfolio: pd.DataFrame) -> go.Figure:
     fig.update_layout(
         height=380,
         margin=dict(l=10, r=10, t=10, b=10),
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(17,23,32,.5)",
-        font=dict(color="#8b98a8", family="Inter, system-ui, sans-serif", size=10),
+        paper_bgcolor=t["bg"],
+        plot_bgcolor=t["plot_bg"],
+        font=dict(color=t["text"], family="Inter, system-ui, sans-serif", size=10),
         xaxis=dict(tickangle=-35),
     )
     return fig
@@ -534,6 +693,7 @@ def audit_log(cycle: int, critical: bool) -> pd.DataFrame:
 
 
 init_state()
+st.markdown(build_css(st.session_state.theme), unsafe_allow_html=True)
 
 critical = bool(st.session_state.inject_black_swan)
 status_badge = (
@@ -559,23 +719,15 @@ st.markdown(
 
 st.markdown(
     """
-    <div style="background:linear-gradient(135deg, rgba(34,211,238,.08), rgba(167,139,250,.04));
-                border:1px solid rgba(34,211,238,.22);
-                border-left:3px solid #22d3ee;
-                border-radius:12px;
-                padding:14px 18px;
-                margin-bottom:14px;">
-      <div style="font-size:.72rem;font-weight:750;letter-spacing:.1em;
-                  text-transform:uppercase;color:#22d3ee;margin-bottom:6px;">
-        Qué es esto
-      </div>
-      <div style="font-size:.9rem;line-height:1.6;color:#e6edf3;">
+    <div class="info-card">
+      <div class="info-label">Qué es esto</div>
+      <div class="info-body">
         Un prototipo de <b>capa independiente de validación</b> para portafolios de
         algoritmos de trading. No mide P&amp;L en vivo y no reemplaza el monitoreo
         existente. Responde una sola pregunta:
         <b>¿cómo se comportan estas estrategias bajo escenarios que no vieron en entrenamiento?</b>
       </div>
-      <div style="font-size:.78rem;color:#8b98a8;margin-top:10px;line-height:1.55;">
+      <div class="info-foot">
         Construido con datos sintéticos. Sin conexión a brokers. No constituye
         asesoría financiera. Cada experimento queda etiquetado con versión del
         generador, semilla y hash del dataset para que los resultados sean
@@ -589,6 +741,13 @@ st.markdown(
 
 with st.sidebar:
     st.markdown("### Panel de control")
+
+    theme_label = "☀  Modo claro" if st.session_state.theme == "dark" else "☾  Modo oscuro"
+    if st.button(theme_label, width="stretch", key="theme_toggle"):
+        toggle_theme()
+        st.rerun()
+
+    st.markdown("---")
     preset_name = st.selectbox(
         "Preset de validación",
         ["Standard validation", "Strict quality gate", "Scenario stress test"],
@@ -736,8 +895,8 @@ with st.container(border=True):
 
     st.markdown(
         f'<div style="padding:.7rem .9rem;border-radius:10px;'
-        f'background:rgba(26,34,48,.6);border-left:3px solid {verdict_color};'
-        f'font-size:.85rem;color:#e6edf3;">'
+        f'background:rgba(26,34,48,.4);border-left:3px solid {verdict_color};'
+        f'font-size:.85rem;color:var(--text);">'
         f'<b>Clasificación:</b> {verdict} '
         f'({positive}/{total_s} escenarios con retorno mediano positivo.)'
         f'</div>',
