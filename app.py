@@ -422,6 +422,44 @@ def scenario_figure(results: pd.DataFrame) -> go.Figure:
             "<extra></extra>"
         ),
     ))
+    def scenario_figure(results: pd.DataFrame) -> go.Figure:
+    """Bar chart of median returns across scenarios.
+
+    Y-axis is clamped to a reasonable range so bars are visible.
+    Extreme percentile outliers are capped at the axis limits.
+    """
+    colors = [
+        "#1E9E6E" if v > 0 else "#C4472E"
+        for v in results["Median Return"]
+    ]
+
+    # Clamp error bars to a sensible range so the axis doesn't blow up
+    median_returns = results["Median Return"].to_numpy()
+    p5 = results["P5"].to_numpy()
+    p95 = results["P95"].to_numpy()
+    clamp = 0.60  # ±60% annualized
+    upper = np.clip(p95 - median_returns, 0, clamp)
+    lower = np.clip(median_returns - p5, 0, clamp)
+
+    fig = go.Figure(go.Bar(
+        x=results["Scenario"],
+        y=results["Median Return"],
+        marker_color=colors,
+        error_y=dict(
+            type="data",
+            symmetric=False,
+            array=upper.tolist(),
+            arrayminus=lower.tolist(),
+            color="#6E7B86",
+            thickness=1.2,
+        ),
+        hovertemplate=(
+            "<b>%{x}</b><br>"
+            "Mediana: %{y:.2%}<br>"
+            "<extra></extra>"
+        ),
+    ))
+
     fig.update_layout(
         height=340,
         margin=dict(l=12, r=12, t=20, b=30),
@@ -429,12 +467,18 @@ def scenario_figure(results: pd.DataFrame) -> go.Figure:
         plot_bgcolor="rgba(255,255,255,.35)",
         font=dict(color="#6E7B86", family="Inter, system-ui, sans-serif", size=11),
         showlegend=False,
-        yaxis=dict(title="Retorno mediano anualizado", tickformat=".1%",
-                   gridcolor="rgba(31,41,51,.08)", zeroline=True,
-                   zerolinecolor="rgba(31,41,51,.25)"),
+        yaxis=dict(
+            title="Retorno mediano anualizado",
+            tickformat=".1%",
+            gridcolor="rgba(31,41,51,.08)",
+            zeroline=True,
+            zerolinecolor="rgba(31,41,51,.25)",
+            range=[-0.60, 0.60],  # force ±60% range
+        ),
         xaxis=dict(gridcolor="rgba(31,41,51,.08)"),
     )
     return fig
+    
 
 
 def correlation_heatmap(portfolio: pd.DataFrame) -> go.Figure:
