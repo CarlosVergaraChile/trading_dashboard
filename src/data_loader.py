@@ -1,8 +1,4 @@
-"""Synthetic data generation with reproducible seeds.
-
-Every dataset is derived from a documented seed so any experiment can be
-reproduced from the audit log. No external data source is required.
-"""
+"""Synthetic data generation with reproducible seeds."""
 
 from __future__ import annotations
 
@@ -17,27 +13,12 @@ def generate_simulation_data(
     seed: int = DEFAULT_SEED,
     inject_error: bool = False,
 ) -> pd.DataFrame:
-    """Generate a synthetic price and return series.
-
-    Args:
-        n_observations: number of observations to simulate.
-        seed: random seed for reproducibility.
-        inject_error: if True, injects an extreme negative shock to trigger
-            drift detection. Used by the "Inject Black Swan" button.
-
-    Returns:
-        DataFrame with columns: Timestamp, Price, Return.
-    """
+    """Generate a synthetic price and return series."""
     rng = np.random.default_rng(seed)
 
-    # Base drift and volatility calibrated so the series looks plausible
-    # for a broad-market synthetic index over the simulated horizon.
     base_return = 0.0004
     base_vol = 0.008
 
-    # Occasional regime shifts — small probability of higher volatility.
-    # Kept modest so that the "normal" simulation doesn't produce
-    # implausible drawdowns.
     regime = np.ones(n_observations)
     switch_points = rng.choice(
         n_observations,
@@ -50,8 +31,6 @@ def generate_simulation_data(
     returns = rng.normal(base_return, base_vol, n_observations) * regime
 
     if inject_error:
-        # Inject a single severe negative shock to simulate an anomalous
-        # event the validation layer should detect as drift.
         shock_index = int(n_observations * 0.78)
         returns[shock_index] = -0.31
 
@@ -75,22 +54,16 @@ def generate_portfolio_returns(
     n_algorithms: int = 6,
     seed: int = DEFAULT_SEED,
 ) -> pd.DataFrame:
-    """Generate daily returns for a portfolio of synthetic algorithms.
-
-    Each algorithm has distinct statistical character so that portfolio
-    analysis (correlation, robustness, attribution) has something to work
-    with. This is intentionally not calibrated to any real strategy — it
-    is a demo dataset.
-    """
+    """Generate daily returns for a portfolio of synthetic algorithms."""
     rng = np.random.default_rng(seed)
 
     profiles = [
-        {"name": "Trend Alpha",        "mu": 0.0006, "sigma": 0.009, "autocorr": 0.10},
-        {"name": "Mean Reversion Beta","mu": 0.0003, "sigma": 0.007, "autocorr": -0.15},
-        {"name": "Momentum Gamma",     "mu": 0.0009, "sigma": 0.014, "autocorr": 0.18},
-        {"name": "Defensive Delta",    "mu": 0.0002, "sigma": 0.004, "autocorr": 0.02},
-        {"name": "Volatility Epsilon", "mu": 0.0004, "sigma": 0.011, "autocorr": -0.05},
-        {"name": "Macro Zeta",         "mu": 0.0005, "sigma": 0.010, "autocorr": 0.08},
+        {"name": "Trend Alpha",         "mu": 0.0006, "sigma": 0.009, "autocorr": 0.10},
+        {"name": "Mean Reversion Beta", "mu": 0.0003, "sigma": 0.007, "autocorr": -0.15},
+        {"name": "Momentum Gamma",      "mu": 0.0009, "sigma": 0.014, "autocorr": 0.18},
+        {"name": "Defensive Delta",     "mu": 0.0002, "sigma": 0.004, "autocorr": 0.02},
+        {"name": "Volatility Epsilon",  "mu": 0.0004, "sigma": 0.011, "autocorr": -0.05},
+        {"name": "Macro Zeta",          "mu": 0.0005, "sigma": 0.010, "autocorr": 0.08},
     ][:n_algorithms]
 
     dates = pd.date_range(
