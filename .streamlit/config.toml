@@ -9,6 +9,14 @@ font = "sans serif"
 [server]
 headless = true
 enableCORS = false
+enableXsrfProtection = true
 
 [browser]
 gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+showErrorDetails = true
+
+[logger]
+level = "info"
