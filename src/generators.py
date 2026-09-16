@@ -1,9 +1,4 @@
-"""Scenario generators for robustness testing.
-
-A scenario generator produces a synthetic return series under a named
-regime. Algorithms are then evaluated against each scenario so results
-can be compared across regimes rather than presented as a single curve.
-"""
+"""Scenario generators for robustness testing."""
 
 from __future__ import annotations
 
@@ -64,17 +59,13 @@ def evaluate_algorithm_under_scenarios(
     n_observations: int = 500,
     base_seed: int = 483920,
 ) -> pd.DataFrame:
-    """Evaluate a named algorithm under multiple scenarios.
-
-    Returns per-step statistics multiplied by 252 once at the end, so
-    annualized figures stay in a realistic range.
-    """
+    """Evaluate a named algorithm under multiple scenarios."""
     if scenarios is None:
         scenarios = list(REGIMES.keys())
 
     name_hash = sum(ord(c) for c in algorithm_name)
     beta = 0.8 + ((name_hash % 5) / 10.0)
-    skew = ((name_hash % 11) - 5) / 100000.0
+    skew = ((name_hash % 11) - 5) / 1000000.0
 
     rows = []
     for scenario in scenarios:
