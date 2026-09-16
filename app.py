@@ -93,7 +93,6 @@ CSS = """
     h1, h2, h3, p, label, [data-testid="stMetricLabel"] { color: var(--text); }
     [data-testid="stCaptionContainer"], .stCaption { color: var(--text2); }
 
-    /* HEADER */
     .terminal-header {
         display: flex;
         justify-content: space-between;
@@ -158,7 +157,6 @@ CSS = """
     }
     @keyframes pulse { 70% { box-shadow: 0 0 0 7px transparent; } }
 
-    /* CARDS */
     [data-testid="stVerticalBlockBorderWrapper"] {
         background: linear-gradient(145deg, rgba(22,29,40,.95), rgba(17,23,32,.92));
         border: 1px solid var(--border) !important;
@@ -172,7 +170,6 @@ CSS = """
         box-shadow: 0 18px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
     }
 
-    /* METRICS */
     div[data-testid="stMetric"] {
         background: linear-gradient(145deg, rgba(26,34,48,.9), rgba(17,23,32,.85));
         border: 1px solid var(--border);
@@ -198,7 +195,6 @@ CSS = """
     [data-testid="stMetricDelta"] { font-size: .73rem; }
     [data-testid="stMetricLabel"] { color: var(--text2); font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
 
-    /* TYPOGRAPHY */
     .eyebrow {
         color: var(--accent);
         font-size: .70rem;
@@ -211,7 +207,6 @@ CSS = """
     .section-title { font-size: 1rem; font-weight: 720; margin-bottom: .1rem; color: var(--text); }
     .section-copy { color: var(--text2); font-size: .80rem; margin-bottom: .7rem; }
 
-    /* CHECK CARDS */
     .check-card {
         display: flex;
         justify-content: space-between;
@@ -247,7 +242,6 @@ CSS = """
         border: 1px solid rgba(239,68,68,.3);
     }
 
-    /* ALERT STRIPS */
     .alert-strip {
         display: flex;
         gap: .75rem;
@@ -272,7 +266,6 @@ CSS = """
         font-size: .80rem;
     }
 
-    /* BUTTONS */
     div.stButton > button {
         min-height: 2.65rem;
         border-radius: 9px;
@@ -304,7 +297,6 @@ CSS = """
         box-shadow: 0 4px 20px rgba(34,211,238,.4);
     }
 
-    /* INPUTS */
     div[data-testid="stSelectbox"] > div > div {
         background: rgba(26,34,48,.7);
         border-color: var(--border-hi);
@@ -317,20 +309,17 @@ CSS = """
         color: var(--text);
     }
 
-    /* TABLES */
     [data-testid="stDataFrame"] {
         border: 1px solid var(--border);
         border-radius: 10px;
         overflow: hidden;
     }
 
-    /* PROGRESS */
     div[data-testid="stProgress"] > div > div {
         background: linear-gradient(90deg, var(--accent), var(--purple));
         box-shadow: 0 0 12px rgba(34,211,238,.35);
     }
 
-    /* SIDEBAR */
     [data-testid="stSidebar"] {
         background: rgba(17,23,32,.95);
         border-right: 1px solid var(--border);
@@ -344,39 +333,6 @@ CSS = """
         font-weight: 700;
     }
 
-    /* INFO CARD (Qué es esto) */
-    .info-card {
-        background: linear-gradient(135deg, rgba(34,211,238,.08), rgba(167,139,250,.04));
-        border: 1px solid rgba(34,211,238,.22);
-        border-left: 3px solid var(--accent);
-        border-radius: 12px;
-        padding: 14px 18px;
-        margin-bottom: 14px;
-    }
-
-    .info-card .info-label {
-        font-size: .72rem;
-        font-weight: 750;
-        letter-spacing: .1em;
-        text-transform: uppercase;
-        color: var(--accent);
-        margin-bottom: 6px;
-    }
-
-    .info-card .info-body {
-        font-size: .9rem;
-        line-height: 1.6;
-        color: var(--text);
-    }
-
-    .info-card .info-foot {
-        font-size: .78rem;
-        color: var(--text2);
-        margin-top: 10px;
-        line-height: 1.55;
-    }
-
-    /* FOOTER */
     .fineprint {
         color: var(--text3);
         font-size: .70rem;
@@ -385,7 +341,6 @@ CSS = """
         letter-spacing: .05em;
     }
 
-    /* RESPONSIVE */
     @media (max-width: 800px) {
         [data-testid="stAppViewContainer"] > .main .block-container { padding: .8rem; }
         .terminal-header { align-items: flex-start; }
@@ -393,8 +348,6 @@ CSS = """
     }
 </style>
 """
-"""
-
 st.markdown(
     """
     <div class="info-card">
