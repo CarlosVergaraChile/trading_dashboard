@@ -65,6 +65,7 @@ def generate_scenario(
 
 
 def evaluate_algorithm_under_scenarios(
+   def evaluate_algorithm_under_scenarios(
     algorithm_name: str,
     scenarios: list[str] | None = None,
     n_scenarios: int = 100,
@@ -73,22 +74,20 @@ def evaluate_algorithm_under_scenarios(
 ) -> pd.DataFrame:
     """Evaluate a named algorithm under multiple scenarios.
 
-    In this prototype, the algorithm's return is a synthetic function of
-    the scenario's return plus a deterministic offset derived from the
-    algorithm name. This is not a real strategy — it is a placeholder
-    for the calibration that happens once real data is available.
-
-    Returns a DataFrame with one row per scenario and columns:
-        Scenario, Median Return, P5, P95, Max Drawdown, Probability of Loss.
+    The algorithm's return is modeled as a beta-adjusted response to the
+    scenario return, with a small deterministic skew per algorithm name.
+    This is a placeholder — the calibration happens once real data is
+    available. Results are reported at the per-step level and annualized
+    once, at the end, so magnitude stays interpretable.
     """
     if scenarios is None:
         scenarios = list(REGIMES.keys())
 
-    # Deterministic character per algorithm name, so results are stable
-    # across runs for the same algorithm and seed.
+    # Deterministic character per algorithm name, in per-step units.
+    # skew is expressed as a small fraction of a percent per step.
     name_hash = sum(ord(c) for c in algorithm_name)
-    skew = ((name_hash % 11) - 5) / 1000.0
-    beta = 0.8 + ((name_hash % 5) / 10.0)
+    beta = 0.8 + ((name_hash % 5) / 10.0)      # 0.8 to 1.2
+    skew = ((name_hash % 11) - 5) / 100000.0    # -0.00005 to +0.00005
 
     rows = []
     for scenario in scenarios:
@@ -97,25 +96,26 @@ def evaluate_algorithm_under_scenarios(
             seed = base_seed + i * 17 + name_hash
             df = generate_scenario(scenario, n_observations=n_observations, seed=seed)
 
-            # Algorithm return is a beta-adjusted version of the scenario
-            # return plus a small skew, minus costs applied at the algo level.
+            # Beta-adjusted response to the scenario's per-step return,
+            # plus a small deterministic skew.
             algo_returns = beta * df["Return"].to_numpy() + skew
 
             # Realized price series from the algorithm's perspective.
             algo_prices = 100.0 * np.cumprod(1.0 + algo_returns)
 
-            medians.append(float(np.median(algo_returns)) * 252)
-            p5s.append(float(np.percentile(algo_returns, 5)) * 252)
-            p95s.append(float(np.percentile(algo_returns, 95)) * 252)
+            # Store per-step stats; annualize later.
+            medians.append(float(np.median(algo_returns)))
+            p5s.append(float(np.percentile(algo_returns, 5)))
+            p95s.append(float(np.percentile(algo_returns, 95)))
             peak = np.maximum.accumulate(algo_prices)
             dd = ((algo_prices - peak) / peak).min()
             drawdowns.append(float(dd))
 
         rows.append({
             "Scenario": scenario,
-            "Median Return": float(np.median(medians)),
-            "P5": float(np.median(p5s)),
-            "P95": float(np.median(p95s)),
+            "Median Return": float(np.median(medians)) * 252,
+            "P5": float(np.median(p5s)) * 252,
+            "P95": float(np.median(p95s)) * 252,
             "Max Drawdown": float(np.median(drawdowns)),
             "Probability of Loss": float(np.mean([1 if m < 0 else 0 for m in medians])),
         })
