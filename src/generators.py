@@ -11,12 +11,12 @@ import numpy as np
 import pandas as pd
 
 REGIMES = {
-    "Bullish":       {"mu":  0.0008, "sigma": 0.010, "jump_prob": 0.005},
-    "Bearish":       {"mu": -0.0006, "sigma": 0.012, "jump_prob": 0.010},
-    "Sideways":      {"mu":  0.0000, "sigma": 0.008, "jump_prob": 0.003},
-    "High Volatility":{"mu": 0.0002, "sigma": 0.020, "jump_prob": 0.020},
-    "Low Volatility":{"mu":  0.0004, "sigma": 0.005, "jump_prob": 0.001},
-    "High Costs":    {"mu":  0.0004, "sigma": 0.009, "jump_prob": 0.005, "cost_drag": 0.0004},
+    "Bullish":        {"mu":  0.0008, "sigma": 0.010, "jump_prob": 0.005},
+    "Bearish":        {"mu": -0.0006, "sigma": 0.012, "jump_prob": 0.010},
+    "Sideways":       {"mu":  0.0000, "sigma": 0.008, "jump_prob": 0.003},
+    "High Volatility":{"mu":  0.0002, "sigma": 0.020, "jump_prob": 0.020},
+    "Low Volatility": {"mu":  0.0004, "sigma": 0.005, "jump_prob": 0.001},
+    "High Costs":     {"mu":  0.0004, "sigma": 0.009, "jump_prob": 0.005, "cost_drag": 0.0004},
 }
 
 
@@ -25,16 +25,7 @@ def generate_scenario(
     n_observations: int = 500,
     seed: int = 483920,
 ) -> pd.DataFrame:
-    """Generate a synthetic return series under the named regime.
-
-    Args:
-        regime: key from REGIMES.
-        n_observations: number of observations.
-        seed: random seed for reproducibility.
-
-    Returns:
-        DataFrame with columns: Timestamp, Return, Price.
-    """
+    """Generate a synthetic return series under the named regime."""
     if regime not in REGIMES:
         raise ValueError(f"Unknown regime: {regime}. Valid: {list(REGIMES)}")
 
@@ -54,7 +45,11 @@ def generate_scenario(
     returns = returns - cost_drag
 
     prices = 100.0 * np.cumprod(1.0 + returns)
-    timestamps = pd.date_range(end=pd.Timestamp.now().floor("D"), periods=n_observations, freq="D")
+    timestamps = pd.date_range(
+        end=pd.Timestamp.now().floor("D"),
+        periods=n_observations,
+        freq="D",
+    )
 
     return pd.DataFrame({
         "Timestamp": timestamps,
@@ -65,7 +60,6 @@ def generate_scenario(
 
 
 def evaluate_algorithm_under_scenarios(
-   def evaluate_algorithm_under_scenarios(
     algorithm_name: str,
     scenarios: list[str] | None = None,
     n_scenarios: int = 100,
@@ -84,10 +78,9 @@ def evaluate_algorithm_under_scenarios(
         scenarios = list(REGIMES.keys())
 
     # Deterministic character per algorithm name, in per-step units.
-    # skew is expressed as a small fraction of a percent per step.
     name_hash = sum(ord(c) for c in algorithm_name)
-    beta = 0.8 + ((name_hash % 5) / 10.0)      # 0.8 to 1.2
-    skew = ((name_hash % 11) - 5) / 100000.0    # -0.00005 to +0.00005
+    beta = 0.8 + ((name_hash % 5) / 10.0)
+    skew = ((name_hash % 11) - 5) / 100000.0
 
     rows = []
     for scenario in scenarios:
@@ -96,14 +89,9 @@ def evaluate_algorithm_under_scenarios(
             seed = base_seed + i * 17 + name_hash
             df = generate_scenario(scenario, n_observations=n_observations, seed=seed)
 
-            # Beta-adjusted response to the scenario's per-step return,
-            # plus a small deterministic skew.
             algo_returns = beta * df["Return"].to_numpy() + skew
-
-            # Realized price series from the algorithm's perspective.
             algo_prices = 100.0 * np.cumprod(1.0 + algo_returns)
 
-            # Store per-step stats; annualize later.
             medians.append(float(np.median(algo_returns)))
             p5s.append(float(np.percentile(algo_returns, 5)))
             p95s.append(float(np.percentile(algo_returns, 95)))
