@@ -31,6 +31,7 @@ from src.risk_analysis import (
 )
 from src.generators import REGIMES, evaluate_algorithm_under_scenarios
 from src.report_generator import generate_validation_report
+from src.streamlit_skin import apply_skin
 
 
 st.set_page_config(
@@ -45,100 +46,98 @@ st.set_page_config(
     },
 )
 
+apply_skin()
+
 
 def build_css(theme: str) -> str:
     if theme == "dark":
         v = """
-            --bg: #070d16;
-            --bg-2: #0d1722;
-            --bg-3: #111d2b;
-            --surface: rgba(13, 23, 34, 0.88);
-            --surface-2: rgba(17, 29, 43, 0.96);
-            --surface-3: rgba(21, 35, 52, 0.96);
-            --border: rgba(148,163,184,.15);
-            --border-hi: rgba(96,165,250,.34);
-            --text: #e5edf7;
-            --text-2: #9fb2c8;
-            --text-3: #73839a;
+            --bg: #0a0e14;
+            --bg-2: #0f141c;
+            --surface: #131a24;
+            --surface-2: #1a2230;
+            --surface-3: #212b3b;
+            --border: rgba(148,163,184,.12);
+            --border-hi: rgba(148,163,184,.22);
+            --text: #e8eef5;
+            --text-2: #94a3b8;
+            --text-3: #64748b;
             --accent: #22d3ee;
             --accent-2: #67e8f9;
-            --accent-soft: rgba(34,211,238,.14);
-            --accent-glow: rgba(34,211,238,.4);
+            --accent-soft: rgba(34,211,238,.12);
+            --accent-glow: rgba(34,211,238,.35);
             --green: #10b981;
             --green-soft: rgba(16,185,129,.12);
-            --green-glow: rgba(16,185,129,.35);
-            --red: #f87171;
-            --red-soft: rgba(248,113,113,.12);
-            --red-glow: rgba(248,113,113,.35);
+            --green-glow: rgba(16,185,129,.3);
+            --red: #f43f5e;
+            --red-soft: rgba(244,63,94,.12);
+            --red-glow: rgba(244,63,94,.35);
             --amber: #f59e0b;
             --amber-soft: rgba(245,158,11,.12);
             --purple: #a78bfa;
             --purple-soft: rgba(167,139,250,.12);
-            --shadow-sm: 0 1px 2px rgba(2,6,23,.45);
-            --shadow-md: 0 8px 24px rgba(2,6,23,.5);
-            --shadow-lg: 0 18px 50px rgba(2,6,23,.62);
-            --plot-bg: rgba(7,13,22,.7);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
+            --shadow-md: 0 4px 16px rgba(0,0,0,.3);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,.45);
+            --plot-bg: rgba(15,20,28,.6);
             --plot-grid: rgba(148,163,184,.08);
-            --heat-low: #f87171;
-            --heat-mid: #1b2330;
+            --heat-low: #f43f5e;
+            --heat-mid: #131a24;
             --heat-high: #22d3ee;
-            --input-bg: rgba(17,29,43,.96);
-            --input-border: rgba(148,163,184,.25);
-            --select-text: #e5edf7;
-            --header-bg: rgba(8, 15, 22, 0.7);
+            --input-bg: #1a2230;
+            --input-border: rgba(148,163,184,.22);
+            --select-text: #e8eef5;
         """
     else:
         v = """
-            --bg: #f3f5f9;
-            --bg-2: #f8fafc;
-            --bg-3: #edf3f9;
-            --surface: rgba(255,255,255,.9);
-            --surface-2: rgba(255,255,255,.95);
-            --surface-3: rgba(248,250,252,.98);
-            --border: rgba(15,23,42,.08);
-            --border-hi: rgba(8,145,178,.28);
-            --text: #0f172a;
-            --text-2: #52657a;
-            --text-3: #7b8ea5;
+            --bg: #faf8f3;
+            --bg-2: #f5f2ea;
+            --surface: #ffffff;
+            --surface-2: #fdfcfa;
+            --surface-3: #f7f4ed;
+            --border: rgba(28,43,58,.1);
+            --border-hi: rgba(28,43,58,.18);
+            --text: #0f1c2b;
+            --text-2: #55657a;
+            --text-3: #8b98a8;
             --accent: #0891b2;
-            --accent-2: #22d3ee;
+            --accent-2: #06b6d4;
             --accent-soft: rgba(8,145,178,.1);
-            --accent-glow: rgba(8,145,178,.2);
+            --accent-glow: rgba(8,145,178,.28);
             --green: #059669;
             --green-soft: rgba(5,150,105,.1);
-            --green-glow: rgba(5,150,105,.18);
+            --green-glow: rgba(5,150,105,.25);
             --red: #dc2626;
             --red-soft: rgba(220,38,38,.09);
-            --red-glow: rgba(220,38,38,.15);
+            --red-glow: rgba(220,38,38,.25);
             --amber: #d97706;
             --amber-soft: rgba(217,119,6,.1);
             --purple: #7c3aed;
-            --purple-soft: rgba(124,58,237,.08);
-            --shadow-sm: 0 1px 2px rgba(15,23,42,.05);
-            --shadow-md: 0 8px 22px rgba(15,23,42,.08);
-            --shadow-lg: 0 18px 40px rgba(15,23,42,.12);
-            --plot-bg: rgba(255,255,255,.8);
-            --plot-grid: rgba(15,23,42,.05);
+            --purple-soft: rgba(124,58,237,.1);
+            --shadow-sm: 0 1px 2px rgba(28,43,58,.05);
+            --shadow-md: 0 4px 16px rgba(28,43,58,.08);
+            --shadow-lg: 0 12px 40px rgba(28,43,58,.12);
+            --plot-bg: rgba(250,248,243,.9);
+            --plot-grid: rgba(28,43,58,.06);
             --heat-low: #dc2626;
-            --heat-mid: #f8fafc;
+            --heat-mid: #faf8f3;
             --heat-high: #0891b2;
-            --input-bg: rgba(255,255,255,.96);
-            --input-border: rgba(15,23,42,.12);
-            --select-text: #0f172a;
-            --header-bg: rgba(255,255,255,.78);
+            --input-bg: #ffffff;
+            --input-border: rgba(28,43,58,.18);
+            --select-text: #0f1c2b;
         """
 
     return f"""
 <style>
     :root {{
 {v}
-        --r: 12px;
-        --r-lg: 18px;
-        --r-sm: 8px;
+        --r: 10px;
+        --r-lg: 14px;
+        --r-sm: 6px;
     }}
 
     html, body, .stApp, [data-testid="stAppViewContainer"] {{
-        background: var(--bg) !important;
+        background-color: var(--bg) !important;
         color: var(--text) !important;
         font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif !important;
         font-feature-settings: 'cv02','cv03','cv04','cv11','tnum';
@@ -146,9 +145,8 @@ def build_css(theme: str) -> str:
 
     .stApp {{
         background-image:
-            radial-gradient(1100px 500px at 0% -10%, rgba(34,211,238,.12), transparent 52%),
-            radial-gradient(700px 420px at 100% 8%, rgba(167,139,250,.12), transparent 48%),
-            linear-gradient(180deg, rgba(7,13,22,0.18), transparent 400px);
+            radial-gradient(1200px 500px at 0% -10%, var(--accent-soft), transparent 55%),
+            radial-gradient(900px 600px at 100% 5%, var(--purple-soft), transparent 50%);
         background-attachment: fixed;
     }}
 
@@ -159,26 +157,33 @@ def build_css(theme: str) -> str:
 
     [data-testid="stAppViewContainer"] > .main .block-container {{
         max-width: 1520px;
-        padding: 1.2rem 2rem 2.5rem;
+        padding: 1.4rem 2.4rem 3rem;
     }}
 
     * {{ box-sizing: border-box; }}
+
     h1, h2, h3, h4, h5, p, label, span, div {{ color: var(--text); }}
+
     .tnum {{ font-variant-numeric: tabular-nums; }}
 
     .term-header {{
         display: flex;
         align-items: center;
         gap: 18px;
-        padding: 10px 18px 18px;
-        margin: 0 -2rem 20px;
-        background: rgba(7,13,22,0.08);
+        padding: 4px 0 20px;
         border-bottom: 1px solid var(--border);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        position: sticky;
-        top: 0;
-        z-index: 10;
+        margin-bottom: 24px;
+        position: relative;
+    }}
+
+    .term-header::after {{
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 180px;
+        height: 1px;
+        background: linear-gradient(90deg, var(--accent), transparent);
     }}
 
     .brand {{
@@ -190,25 +195,24 @@ def build_css(theme: str) -> str:
     }}
 
     .brand-mark {{
-        width: 42px;
-        height: 42px;
+        width: 40px;
+        height: 40px;
         display: grid;
         place-items: center;
-        border-radius: 12px;
+        border-radius: 10px;
         background: linear-gradient(135deg, var(--accent), var(--purple));
-        color: #08141a;
+        color: #06121a;
         font-size: 20px;
         font-weight: 800;
-        box-shadow: 0 0 20px var(--accent-glow);
         flex-shrink: 0;
+        box-shadow: 0 0 24px var(--accent-glow);
     }}
 
     .brand-title {{
         font-size: 15px;
-        font-weight: 800;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        line-height: 1.2;
+        font-weight: 750;
+        letter-spacing: 0.02em;
+        line-height: 1.15;
         color: var(--text);
         white-space: nowrap;
     }}
@@ -216,37 +220,41 @@ def build_css(theme: str) -> str:
     .brand-sub {{
         font-size: 11.5px;
         color: var(--text-2);
-        margin-top: 3px;
+        margin-top: 2px;
         line-height: 1.3;
     }}
 
     .status-chip {{
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 6px 12px;
+        gap: 7px;
+        padding: 5px 12px;
         border-radius: 999px;
-        font-size: 10.5px;
-        font-weight: 800;
-        letter-spacing: 0.12em;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
         white-space: nowrap;
-        border: 1px solid transparent;
     }}
 
     .status-ok {{
         color: var(--green);
         background: var(--green-soft);
-        border-color: var(--green-glow);
-        box-shadow: inset 0 0 12px rgba(16,185,129,.06);
+        border: 1px solid var(--green-glow);
+        box-shadow: 0 0 14px var(--green-glow), inset 0 0 10px rgba(16,185,129,.05);
     }}
 
     .status-alert {{
         color: var(--red);
         background: var(--red-soft);
-        border-color: var(--red-glow);
-        box-shadow: 0 0 18px rgba(248,113,113,.12);
-        animation: alertPulse 1.8s ease-in-out infinite;
+        border: 1px solid var(--red-glow);
+        box-shadow: 0 0 20px var(--red-glow);
+        animation: alertPulse 1.6s ease-in-out infinite;
+    }}
+
+    @keyframes alertPulse {{
+        0%, 100% {{ box-shadow: 0 0 14px var(--red-glow); }}
+        50% {{ box-shadow: 0 0 28px var(--red-glow), 0 0 40px var(--red-soft); }}
     }}
 
     .status-dot {{
@@ -258,11 +266,6 @@ def build_css(theme: str) -> str:
         animation: dotPulse 2s ease-in-out infinite;
     }}
 
-    @keyframes alertPulse {{
-        0%, 100% {{ box-shadow: 0 0 12px rgba(248,113,113,.12); }}
-        50% {{ box-shadow: 0 0 24px rgba(248,113,113,.25), 0 0 36px rgba(248,113,113,.12); }}
-    }}
-
     @keyframes dotPulse {{
         0%, 100% {{ opacity: 1; transform: scale(1); }}
         50% {{ opacity: 0.5; transform: scale(0.8); }}
@@ -270,51 +273,51 @@ def build_css(theme: str) -> str:
 
     .info-banner {{
         position: relative;
-        padding: 18px 20px 16px;
+        padding: 18px 22px;
         border-radius: var(--r-lg);
-        background: linear-gradient(135deg, rgba(34,211,238,.09), rgba(167,139,250,.06));
-        border: 1px solid rgba(34,211,238,.16);
+        background: linear-gradient(135deg, var(--accent-soft), transparent 70%);
+        border: 1px solid var(--accent-soft);
         border-left: 3px solid var(--accent);
-        margin: 14px 0 18px;
+        margin-bottom: 24px;
         overflow: hidden;
-        box-shadow: var(--shadow-sm);
     }}
 
     .info-banner::before {{
         content: '';
         position: absolute;
-        top: -70px;
-        right: -70px;
-        width: 180px;
-        height: 180px;
+        top: -40px;
+        right: -40px;
+        width: 160px;
+        height: 160px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(34,211,238,.18), transparent 70%);
+        background: radial-gradient(circle, var(--accent-soft), transparent 70%);
         pointer-events: none;
     }}
 
     .info-eyebrow {{
-        position: relative;
-        z-index: 1;
-        font-size: 10px;
-        font-weight: 800;
+        font-size: 10.5px;
+        font-weight: 750;
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--accent);
         margin-bottom: 8px;
     }}
 
-    .info-body, .info-foot {{
-        position: relative;
-        z-index: 1;
-        font-size: 13px;
+    .info-body {{
+        font-size: 13.5px;
         line-height: 1.65;
         color: var(--text);
+        position: relative;
+        z-index: 1;
     }}
 
     .info-foot {{
         font-size: 11.5px;
         color: var(--text-2);
         margin-top: 10px;
+        line-height: 1.55;
+        position: relative;
+        z-index: 1;
     }}
 
     [data-testid="stVerticalBlockBorderWrapper"] {{
@@ -337,20 +340,20 @@ def build_css(theme: str) -> str:
         border-radius: var(--r);
         padding: 14px 16px;
         box-shadow: var(--shadow-sm);
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
         position: relative;
         overflow: hidden;
-        min-height: 126px;
     }}
 
     div[data-testid="stMetric"]::after {{
         content: '';
         position: absolute;
-        top: -30px;
-        right: -24px;
-        width: 130px;
-        height: 130px;
+        top: 0;
+        right: 0;
+        width: 80px;
+        height: 80px;
         border-radius: 50%;
-        background: radial-gradient(circle, var(--accent-soft), transparent 70%);
+        background: radial-gradient(circle at top right, var(--accent-soft), transparent 65%);
         opacity: 0.7;
         pointer-events: none;
     }}
@@ -358,49 +361,48 @@ def build_css(theme: str) -> str:
     div[data-testid="stMetricLabel"] {{
         color: var(--text-2) !important;
         font-size: 10.5px !important;
-        font-weight: 800 !important;
+        font-weight: 700 !important;
         text-transform: uppercase;
-        letter-spacing: 0.12em;
-        margin-bottom: 6px !important;
+        letter-spacing: 0.1em;
+        margin-bottom: 4px !important;
     }}
 
     [data-testid="stMetricValue"] {{
         color: var(--text) !important;
         font-size: 22px !important;
-        font-weight: 800 !important;
-        letter-spacing: -0.03em;
+        font-weight: 720 !important;
         font-variant-numeric: tabular-nums;
+        letter-spacing: -0.02em;
     }}
 
     [data-testid="stMetricDelta"] {{
         font-size: 11px !important;
-        font-weight: 600 !important;
         font-variant-numeric: tabular-nums;
     }}
 
     .section-eyebrow {{
         display: inline-block;
         font-size: 10px;
-        font-weight: 800;
+        font-weight: 750;
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--accent);
-        margin-bottom: 8px;
+        margin-bottom: 6px;
     }}
 
     .section-title {{
         font-size: 15px;
-        font-weight: 800;
+        font-weight: 720;
         color: var(--text);
-        letter-spacing: -0.02em;
-        line-height: 1.3;
-        margin-bottom: 6px;
+        letter-spacing: -0.01em;
+        line-height: 1.25;
+        margin-bottom: 4px;
     }}
 
     .section-copy {{
         font-size: 12px;
         color: var(--text-2);
-        line-height: 1.6;
+        line-height: 1.55;
     }}
 
     .check-row {{
@@ -408,23 +410,29 @@ def build_css(theme: str) -> str:
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        padding: 10px 12px;
-        margin: 7px 0;
-        border-radius: var(--r-sm);
-        background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(148,163,184,0.02));
+        padding: 11px 14px;
+        margin: 6px 0;
+        background: var(--surface-2);
         border: 1px solid var(--border);
+        border-radius: var(--r-sm);
         font-size: 12.5px;
         color: var(--text);
+        transition: border-color 0.15s, transform 0.15s;
+    }}
+
+    .check-row:hover {{
+        border-color: var(--border-hi);
+        transform: translateX(2px);
     }}
 
     .chip {{
-        min-width: 76px;
+        min-width: 72px;
         text-align: center;
-        padding: 4px 10px;
+        padding: 3px 10px;
         border-radius: 999px;
-        font-size: 9.5px;
+        font-size: 10px;
         font-weight: 800;
-        letter-spacing: 0.09em;
+        letter-spacing: 0.08em;
     }}
 
     .chip-pass {{
@@ -443,11 +451,11 @@ def build_css(theme: str) -> str:
         display: flex;
         gap: 12px;
         align-items: flex-start;
-        padding: 12px 14px;
+        padding: 12px 16px;
         border-radius: var(--r);
         font-size: 12.5px;
         line-height: 1.55;
-        margin: 0 0 18px;
+        margin: 0 0 20px;
     }}
 
     .banner-ok {{
@@ -460,10 +468,13 @@ def build_css(theme: str) -> str:
         color: var(--red);
         background: linear-gradient(90deg, var(--red-soft), var(--amber-soft));
         border: 1px solid var(--red-glow);
+        box-shadow: 0 0 20px var(--red-soft);
     }}
 
+    .banner strong {{ color: inherit; font-weight: 700; }}
+
     .verdict {{
-        padding: 12px 14px;
+        padding: 12px 16px;
         border-radius: var(--r);
         background: var(--surface-2);
         border-left: 3px solid var(--accent);
@@ -471,37 +482,46 @@ def build_css(theme: str) -> str:
         color: var(--text);
         line-height: 1.55;
         margin-top: 16px;
-        box-shadow: var(--shadow-sm);
     }}
+
+    .verdict strong {{ color: var(--text); font-weight: 700; }}
 
     div.stButton > button {{
         min-height: 40px;
-        border-radius: 10px;
+        border-radius: var(--r-sm);
         border: 1px solid var(--border-hi);
-        background: rgba(17,29,43,0.7);
+        background: var(--surface-2);
         color: var(--text);
-        font-weight: 700;
-        font-size: 12.5px;
-        transition: all 0.18s ease;
+        font-weight: 600;
+        font-size: 13px;
+        font-family: inherit;
+        transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
     }}
 
     div.stButton > button:hover {{
         border-color: var(--accent);
         color: var(--accent);
         background: var(--accent-soft);
+        box-shadow: 0 0 0 3px var(--accent-soft);
         transform: translateY(-1px);
+    }}
+
+    div.stButton > button:active {{
+        transform: translateY(0) scale(0.98);
     }}
 
     div.stButton > button[kind="primary"] {{
         background: linear-gradient(135deg, var(--accent), var(--accent-2));
         border-color: transparent;
-        color: #08141a;
-        box-shadow: 0 0 18px var(--accent-glow);
+        color: #06121a;
+        font-weight: 700;
+        box-shadow: 0 0 24px var(--accent-glow);
     }}
 
     div.stButton > button[kind="primary"]:hover {{
-        box-shadow: 0 0 26px var(--accent-glow), 0 0 50px var(--accent-soft);
-        color: #08141a;
+        box-shadow: 0 0 32px var(--accent-glow), 0 0 60px var(--accent-soft);
+        color: #06121a;
+        transform: translateY(-1px);
     }}
 
     div[data-testid="stSelectbox"] > div > div,
@@ -518,6 +538,34 @@ def build_css(theme: str) -> str:
         color: var(--select-text) !important;
     }}
 
+    div[data-testid="stSelectbox"] svg,
+    div[data-baseweb="select"] svg {{
+        fill: var(--text-2) !important;
+    }}
+
+    div[data-baseweb="popover"],
+    div[data-baseweb="popover"] > div,
+    div[role="listbox"] {{
+        background-color: var(--input-bg) !important;
+        border: 1px solid var(--input-border) !important;
+        border-radius: var(--r-sm) !important;
+        box-shadow: var(--shadow-lg) !important;
+    }}
+
+    div[role="listbox"] li,
+    div[role="listbox"] [role="option"] {{
+        background-color: var(--input-bg) !important;
+        color: var(--select-text) !important;
+        font-size: 13px !important;
+    }}
+
+    div[role="listbox"] li:hover,
+    div[role="listbox"] [role="option"]:hover,
+    div[role="option"][aria-selected="true"] {{
+        background-color: var(--accent-soft) !important;
+        color: var(--accent) !important;
+    }}
+
     div[data-testid="stTextInput"] input {{
         background-color: var(--input-bg) !important;
         border-color: var(--input-border) !important;
@@ -526,9 +574,34 @@ def build_css(theme: str) -> str:
         min-height: 40px;
     }}
 
+    div[data-testid="stProgress"] {{
+        margin: 12px 0;
+    }}
+
+    div[data-testid="stProgress"] * {{
+        color: var(--text) !important;
+    }}
+
+    div[data-testid="stProgress"] p,
+    div[data-testid="stProgress"] span,
+    div[data-testid="stProgress"] div[role="progressbar"] + * {{
+        color: var(--text) !important;
+        font-weight: 600 !important;
+        font-size: 12px !important;
+        margin-bottom: 6px !important;
+    }}
+
+    div[data-testid="stProgress"] > div > div {{
+        background-color: var(--surface-3) !important;
+        border-radius: 6px !important;
+        height: 6px !important;
+    }}
+
     div[data-testid="stProgress"] > div > div > div {{
         background: linear-gradient(90deg, var(--accent), var(--purple)) !important;
+        border-radius: 6px !important;
         box-shadow: 0 0 12px var(--accent-glow);
+        height: 6px !important;
     }}
 
     [data-testid="stDataFrame"] {{
@@ -537,21 +610,46 @@ def build_css(theme: str) -> str:
         overflow: hidden;
     }}
 
+    [data-testid="stDataFrame"] * {{
+        font-family: inherit !important;
+    }}
+
+    div.stDownloadButton > button {{
+        min-height: 40px;
+        border-radius: var(--r-sm);
+        border: 1px solid var(--border-hi);
+        background: var(--surface-2);
+        color: var(--text);
+        font-weight: 600;
+        font-size: 13px;
+    }}
+
+    div.stDownloadButton > button:hover {{
+        border-color: var(--green);
+        color: var(--green);
+        background: var(--green-soft);
+    }}
+
     [data-testid="stSidebar"] {{
-        background: rgba(7,13,22,0.9) !important;
+        background: var(--surface) !important;
         border-right: 1px solid var(--border);
     }}
 
     [data-testid="stSidebar"] > div:first-child {{
-        padding: 22px 18px;
+        padding: 24px 20px;
     }}
 
     [data-testid="stSidebar"] h3 {{
         color: var(--accent) !important;
-        font-size: 10px !important;
+        font-size: 10.5px !important;
         text-transform: uppercase;
         letter-spacing: 0.14em;
-        font-weight: 800;
+        font-weight: 750;
+        margin: 20px 0 12px !important;
+    }}
+
+    [data-testid="stSidebar"] h3:first-child {{
+        margin-top: 0 !important;
     }}
 
     [data-testid="stSidebar"] * {{
@@ -565,26 +663,38 @@ def build_css(theme: str) -> str:
     }}
 
     hr {{
-        margin: 18px 0 !important;
+        margin: 20px 0 !important;
         border-color: var(--border) !important;
+        opacity: 0.5;
     }}
 
     .fineprint {{
         color: var(--text-3);
-        font-size: 10px;
+        font-size: 10.5px;
         text-align: center;
         padding-top: 32px;
         letter-spacing: 0.1em;
-        font-weight: 700;
+        font-weight: 600;
         text-transform: uppercase;
+    }}
+
+    [data-testid="stDialog"] > div {{
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow-lg);
+    }}
+
+    [data-testid="stDialog"] * {{
+        color: var(--text);
     }}
 
     @media (max-width: 900px) {{
         [data-testid="stAppViewContainer"] > .main .block-container {{
-            padding: 1rem 1rem 2rem;
+            padding: 1rem;
         }}
         .brand-sub {{ display: none; }}
-        .term-header {{ flex-wrap: wrap; margin: 0 -1rem 18px; padding-inline: 12px; }}
+        .term-header {{ flex-wrap: wrap; }}
     }}
 </style>
 """
@@ -870,7 +980,6 @@ def audit_log(cycle: int, critical: bool) -> pd.DataFrame:
 # -----------------------------------------------------------------------------
 
 init_state()
-st.markdown(build_css(st.session_state.theme), unsafe_allow_html=True)
 
 critical = bool(st.session_state.inject_black_swan)
 status_html = (
@@ -990,7 +1099,6 @@ else:
     )
 
 
-# SECTION 1 — VALIDATION + RISK
 left, right = st.columns([1, 1.5], gap="medium")
 
 with left:
@@ -1036,7 +1144,6 @@ with right:
         )
 
 
-# SECTION 2 — ROBUSTNESS
 st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
 with st.container(border=True):
@@ -1094,7 +1201,6 @@ with st.container(border=True):
     )
 
 
-# SECTION 3 — PORTFOLIO + AUDIT
 st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
 col_a, col_b = st.columns([1.15, 1], gap="medium")
@@ -1147,7 +1253,6 @@ with col_b:
         )
 
 
-# SECTION 4 — REPORT
 st.markdown("<div style='height:14px'></div>", unsafe_allow_html=True)
 
 with st.container(border=True):
