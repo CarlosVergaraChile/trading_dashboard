@@ -49,93 +49,96 @@ st.set_page_config(
 def build_css(theme: str) -> str:
     if theme == "dark":
         v = """
-            --bg: #0a0e14;
-            --bg-2: #0f141c;
-            --surface: #131a24;
-            --surface-2: #1a2230;
-            --surface-3: #212b3b;
-            --border: rgba(148,163,184,.12);
-            --border-hi: rgba(148,163,184,.22);
-            --text: #e8eef5;
-            --text-2: #94a3b8;
-            --text-3: #64748b;
+            --bg: #070d16;
+            --bg-2: #0d1722;
+            --bg-3: #111d2b;
+            --surface: rgba(13, 23, 34, 0.88);
+            --surface-2: rgba(17, 29, 43, 0.96);
+            --surface-3: rgba(21, 35, 52, 0.96);
+            --border: rgba(148,163,184,.15);
+            --border-hi: rgba(96,165,250,.34);
+            --text: #e5edf7;
+            --text-2: #9fb2c8;
+            --text-3: #73839a;
             --accent: #22d3ee;
             --accent-2: #67e8f9;
-            --accent-soft: rgba(34,211,238,.12);
-            --accent-glow: rgba(34,211,238,.35);
+            --accent-soft: rgba(34,211,238,.14);
+            --accent-glow: rgba(34,211,238,.4);
             --green: #10b981;
             --green-soft: rgba(16,185,129,.12);
-            --green-glow: rgba(16,185,129,.3);
-            --red: #f43f5e;
-            --red-soft: rgba(244,63,94,.12);
-            --red-glow: rgba(244,63,94,.35);
+            --green-glow: rgba(16,185,129,.35);
+            --red: #f87171;
+            --red-soft: rgba(248,113,113,.12);
+            --red-glow: rgba(248,113,113,.35);
             --amber: #f59e0b;
             --amber-soft: rgba(245,158,11,.12);
             --purple: #a78bfa;
             --purple-soft: rgba(167,139,250,.12);
-            --shadow-sm: 0 1px 2px rgba(0,0,0,.4);
-            --shadow-md: 0 4px 16px rgba(0,0,0,.3);
-            --shadow-lg: 0 12px 40px rgba(0,0,0,.45);
-            --plot-bg: rgba(15,20,28,.6);
+            --shadow-sm: 0 1px 2px rgba(2,6,23,.45);
+            --shadow-md: 0 8px 24px rgba(2,6,23,.5);
+            --shadow-lg: 0 18px 50px rgba(2,6,23,.62);
+            --plot-bg: rgba(7,13,22,.7);
             --plot-grid: rgba(148,163,184,.08);
-            --heat-low: #f43f5e;
-            --heat-mid: #131a24;
+            --heat-low: #f87171;
+            --heat-mid: #1b2330;
             --heat-high: #22d3ee;
-            --input-bg: #1a2230;
-            --input-border: rgba(148,163,184,.22);
-            --select-text: #e8eef5;
+            --input-bg: rgba(17,29,43,.96);
+            --input-border: rgba(148,163,184,.25);
+            --select-text: #e5edf7;
+            --header-bg: rgba(8, 15, 22, 0.7);
         """
     else:
         v = """
-            --bg: #faf8f3;
-            --bg-2: #f5f2ea;
-            --surface: #ffffff;
-            --surface-2: #fdfcfa;
-            --surface-3: #f7f4ed;
-            --border: rgba(28,43,58,.1);
-            --border-hi: rgba(28,43,58,.18);
-            --text: #0f1c2b;
-            --text-2: #55657a;
-            --text-3: #8b98a8;
+            --bg: #f3f5f9;
+            --bg-2: #f8fafc;
+            --bg-3: #edf3f9;
+            --surface: rgba(255,255,255,.9);
+            --surface-2: rgba(255,255,255,.95);
+            --surface-3: rgba(248,250,252,.98);
+            --border: rgba(15,23,42,.08);
+            --border-hi: rgba(8,145,178,.28);
+            --text: #0f172a;
+            --text-2: #52657a;
+            --text-3: #7b8ea5;
             --accent: #0891b2;
-            --accent-2: #06b6d4;
+            --accent-2: #22d3ee;
             --accent-soft: rgba(8,145,178,.1);
-            --accent-glow: rgba(8,145,178,.28);
+            --accent-glow: rgba(8,145,178,.2);
             --green: #059669;
             --green-soft: rgba(5,150,105,.1);
-            --green-glow: rgba(5,150,105,.25);
+            --green-glow: rgba(5,150,105,.18);
             --red: #dc2626;
             --red-soft: rgba(220,38,38,.09);
-            --red-glow: rgba(220,38,38,.25);
+            --red-glow: rgba(220,38,38,.15);
             --amber: #d97706;
             --amber-soft: rgba(217,119,6,.1);
             --purple: #7c3aed;
-            --purple-soft: rgba(124,58,237,.1);
-            --shadow-sm: 0 1px 2px rgba(28,43,58,.05);
-            --shadow-md: 0 4px 16px rgba(28,43,58,.08);
-            --shadow-lg: 0 12px 40px rgba(28,43,58,.12);
-            --plot-bg: rgba(250,248,243,.9);
-            --plot-grid: rgba(28,43,58,.06);
+            --purple-soft: rgba(124,58,237,.08);
+            --shadow-sm: 0 1px 2px rgba(15,23,42,.05);
+            --shadow-md: 0 8px 22px rgba(15,23,42,.08);
+            --shadow-lg: 0 18px 40px rgba(15,23,42,.12);
+            --plot-bg: rgba(255,255,255,.8);
+            --plot-grid: rgba(15,23,42,.05);
             --heat-low: #dc2626;
-            --heat-mid: #faf8f3;
+            --heat-mid: #f8fafc;
             --heat-high: #0891b2;
-            --input-bg: #ffffff;
-            --input-border: rgba(28,43,58,.18);
-            --select-text: #0f1c2b;
+            --input-bg: rgba(255,255,255,.96);
+            --input-border: rgba(15,23,42,.12);
+            --select-text: #0f172a;
+            --header-bg: rgba(255,255,255,.78);
         """
 
     return f"""
 <style>
     :root {{
 {v}
-        --r: 10px;
-        --r-lg: 14px;
-        --r-sm: 6px;
+        --r: 12px;
+        --r-lg: 18px;
+        --r-sm: 8px;
     }}
 
-    /* BASE */
     html, body, .stApp, [data-testid="stAppViewContainer"] {{
-        background-color: var(--bg) !important;
+        background: var(--bg) !important;
         color: var(--text) !important;
         font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif !important;
         font-feature-settings: 'cv02','cv03','cv04','cv11','tnum';
@@ -143,8 +146,9 @@ def build_css(theme: str) -> str:
 
     .stApp {{
         background-image:
-            radial-gradient(1200px 500px at 0% -10%, var(--accent-soft), transparent 55%),
-            radial-gradient(900px 600px at 100% 5%, var(--purple-soft), transparent 50%);
+            radial-gradient(1100px 500px at 0% -10%, rgba(34,211,238,.12), transparent 52%),
+            radial-gradient(700px 420px at 100% 8%, rgba(167,139,250,.12), transparent 48%),
+            linear-gradient(180deg, rgba(7,13,22,0.18), transparent 400px);
         background-attachment: fixed;
     }}
 
@@ -155,35 +159,26 @@ def build_css(theme: str) -> str:
 
     [data-testid="stAppViewContainer"] > .main .block-container {{
         max-width: 1520px;
-        padding: 1.4rem 2.4rem 3rem;
+        padding: 1.2rem 2rem 2.5rem;
     }}
 
     * {{ box-sizing: border-box; }}
-
-    /* TYPOGRAPHY */
     h1, h2, h3, h4, h5, p, label, span, div {{ color: var(--text); }}
-
     .tnum {{ font-variant-numeric: tabular-nums; }}
 
-    /* HEADER */
     .term-header {{
         display: flex;
         align-items: center;
         gap: 18px;
-        padding: 4px 0 20px;
+        padding: 10px 18px 18px;
+        margin: 0 -2rem 20px;
+        background: rgba(7,13,22,0.08);
         border-bottom: 1px solid var(--border);
-        margin-bottom: 24px;
-        position: relative;
-    }}
-
-    .term-header::after {{
-        content: '';
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        width: 180px;
-        height: 1px;
-        background: linear-gradient(90deg, var(--accent), transparent);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 10;
     }}
 
     .brand {{
@@ -195,24 +190,25 @@ def build_css(theme: str) -> str:
     }}
 
     .brand-mark {{
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
         display: grid;
         place-items: center;
-        border-radius: 10px;
+        border-radius: 12px;
         background: linear-gradient(135deg, var(--accent), var(--purple));
-        color: #06121a;
+        color: #08141a;
         font-size: 20px;
         font-weight: 800;
+        box-shadow: 0 0 20px var(--accent-glow);
         flex-shrink: 0;
-        box-shadow: 0 0 24px var(--accent-glow);
     }}
 
     .brand-title {{
         font-size: 15px;
-        font-weight: 750;
-        letter-spacing: 0.02em;
-        line-height: 1.15;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        line-height: 1.2;
         color: var(--text);
         white-space: nowrap;
     }}
@@ -220,41 +216,37 @@ def build_css(theme: str) -> str:
     .brand-sub {{
         font-size: 11.5px;
         color: var(--text-2);
-        margin-top: 2px;
+        margin-top: 3px;
         line-height: 1.3;
     }}
 
     .status-chip {{
         display: inline-flex;
         align-items: center;
-        gap: 7px;
-        padding: 5px 12px;
+        gap: 8px;
+        padding: 6px 12px;
         border-radius: 999px;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.08em;
+        font-size: 10.5px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
         white-space: nowrap;
+        border: 1px solid transparent;
     }}
 
     .status-ok {{
         color: var(--green);
         background: var(--green-soft);
-        border: 1px solid var(--green-glow);
-        box-shadow: 0 0 14px var(--green-glow), inset 0 0 10px rgba(16,185,129,.05);
+        border-color: var(--green-glow);
+        box-shadow: inset 0 0 12px rgba(16,185,129,.06);
     }}
 
     .status-alert {{
         color: var(--red);
         background: var(--red-soft);
-        border: 1px solid var(--red-glow);
-        box-shadow: 0 0 20px var(--red-glow);
-        animation: alertPulse 1.6s ease-in-out infinite;
-    }}
-
-    @keyframes alertPulse {{
-        0%, 100% {{ box-shadow: 0 0 14px var(--red-glow); }}
-        50% {{ box-shadow: 0 0 28px var(--red-glow), 0 0 40px var(--red-soft); }}
+        border-color: var(--red-glow);
+        box-shadow: 0 0 18px rgba(248,113,113,.12);
+        animation: alertPulse 1.8s ease-in-out infinite;
     }}
 
     .status-dot {{
@@ -266,62 +258,65 @@ def build_css(theme: str) -> str:
         animation: dotPulse 2s ease-in-out infinite;
     }}
 
+    @keyframes alertPulse {{
+        0%, 100% {{ box-shadow: 0 0 12px rgba(248,113,113,.12); }}
+        50% {{ box-shadow: 0 0 24px rgba(248,113,113,.25), 0 0 36px rgba(248,113,113,.12); }}
+    }}
+
     @keyframes dotPulse {{
         0%, 100% {{ opacity: 1; transform: scale(1); }}
         50% {{ opacity: 0.5; transform: scale(0.8); }}
     }}
 
-    /* INFO BANNER */
     .info-banner {{
         position: relative;
-        padding: 18px 22px;
+        padding: 18px 20px 16px;
         border-radius: var(--r-lg);
-        background: linear-gradient(135deg, var(--accent-soft), transparent 70%);
-        border: 1px solid var(--accent-soft);
+        background: linear-gradient(135deg, rgba(34,211,238,.09), rgba(167,139,250,.06));
+        border: 1px solid rgba(34,211,238,.16);
         border-left: 3px solid var(--accent);
-        margin-bottom: 24px;
+        margin: 14px 0 18px;
         overflow: hidden;
+        box-shadow: var(--shadow-sm);
     }}
 
     .info-banner::before {{
         content: '';
         position: absolute;
-        top: -40px;
-        right: -40px;
-        width: 160px;
-        height: 160px;
+        top: -70px;
+        right: -70px;
+        width: 180px;
+        height: 180px;
         border-radius: 50%;
-        background: radial-gradient(circle, var(--accent-soft), transparent 70%);
+        background: radial-gradient(circle, rgba(34,211,238,.18), transparent 70%);
         pointer-events: none;
     }}
 
     .info-eyebrow {{
-        font-size: 10.5px;
-        font-weight: 750;
+        position: relative;
+        z-index: 1;
+        font-size: 10px;
+        font-weight: 800;
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--accent);
         margin-bottom: 8px;
     }}
 
-    .info-body {{
-        font-size: 13.5px;
-        line-height: 1.65;
-        color: var(--text);
+    .info-body, .info-foot {{
         position: relative;
         z-index: 1;
+        font-size: 13px;
+        line-height: 1.65;
+        color: var(--text);
     }}
 
     .info-foot {{
         font-size: 11.5px;
         color: var(--text-2);
         margin-top: 10px;
-        line-height: 1.55;
-        position: relative;
-        z-index: 1;
     }}
 
-    /* CARDS */
     [data-testid="stVerticalBlockBorderWrapper"] {{
         background: var(--surface) !important;
         border: 1px solid var(--border) !important;
@@ -335,7 +330,6 @@ def build_css(theme: str) -> str:
         box-shadow: var(--shadow-md);
     }}
 
-    /* METRICS */
     div[data-testid="stMetric"] {{
         background: linear-gradient(160deg, var(--surface-2), var(--surface));
         border: 1px solid var(--border);
@@ -343,107 +337,94 @@ def build_css(theme: str) -> str:
         border-radius: var(--r);
         padding: 14px 16px;
         box-shadow: var(--shadow-sm);
-        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
         position: relative;
         overflow: hidden;
+        min-height: 126px;
     }}
 
     div[data-testid="stMetric"]::after {{
         content: '';
         position: absolute;
-        top: 0;
-        right: 0;
-        width: 80px;
-        height: 80px;
+        top: -30px;
+        right: -24px;
+        width: 130px;
+        height: 130px;
         border-radius: 50%;
-        background: radial-gradient(circle at top right, var(--accent-soft), transparent 65%);
+        background: radial-gradient(circle, var(--accent-soft), transparent 70%);
         opacity: 0.7;
         pointer-events: none;
     }}
 
-    div[data-testid="stMetric"]:hover {{
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-        border-left-color: var(--purple);
-    }}
-
-    [data-testid="stMetricLabel"] {{
+    div[data-testid="stMetricLabel"] {{
         color: var(--text-2) !important;
         font-size: 10.5px !important;
-        font-weight: 700 !important;
+        font-weight: 800 !important;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-bottom: 4px !important;
+        letter-spacing: 0.12em;
+        margin-bottom: 6px !important;
     }}
 
     [data-testid="stMetricValue"] {{
         color: var(--text) !important;
         font-size: 22px !important;
-        font-weight: 720 !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.03em;
         font-variant-numeric: tabular-nums;
-        letter-spacing: -0.02em;
     }}
 
     [data-testid="stMetricDelta"] {{
         font-size: 11px !important;
+        font-weight: 600 !important;
         font-variant-numeric: tabular-nums;
     }}
 
-    /* SECTION HEADERS */
     .section-eyebrow {{
         display: inline-block;
         font-size: 10px;
-        font-weight: 750;
+        font-weight: 800;
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--accent);
-        margin-bottom: 6px;
+        margin-bottom: 8px;
     }}
 
     .section-title {{
         font-size: 15px;
-        font-weight: 720;
+        font-weight: 800;
         color: var(--text);
-        letter-spacing: -0.01em;
-        line-height: 1.25;
-        margin-bottom: 4px;
+        letter-spacing: -0.02em;
+        line-height: 1.3;
+        margin-bottom: 6px;
     }}
 
     .section-copy {{
         font-size: 12px;
         color: var(--text-2);
-        line-height: 1.55;
+        line-height: 1.6;
     }}
 
-    /* CHECK CARDS */
     .check-row {{
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        padding: 11px 14px;
-        margin: 6px 0;
-        background: var(--surface-2);
-        border: 1px solid var(--border);
+        padding: 10px 12px;
+        margin: 7px 0;
         border-radius: var(--r-sm);
+        background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(148,163,184,0.02));
+        border: 1px solid var(--border);
         font-size: 12.5px;
         color: var(--text);
-        transition: border-color 0.15s, transform 0.15s;
-    }}
-
-    .check-row:hover {{
-        border-color: var(--border-hi);
-        transform: translateX(2px);
     }}
 
     .chip {{
-        min-width: 72px;
+        min-width: 76px;
         text-align: center;
-        padding: 3px 10px;
+        padding: 4px 10px;
         border-radius: 999px;
-        font-size: 10px;
+        font-size: 9.5px;
         font-weight: 800;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.09em;
     }}
 
     .chip-pass {{
@@ -458,16 +439,15 @@ def build_css(theme: str) -> str:
         border: 1px solid var(--red-glow);
     }}
 
-    /* BANNERS */
     .banner {{
         display: flex;
         gap: 12px;
         align-items: flex-start;
-        padding: 12px 16px;
+        padding: 12px 14px;
         border-radius: var(--r);
         font-size: 12.5px;
         line-height: 1.55;
-        margin: 0 0 20px;
+        margin: 0 0 18px;
     }}
 
     .banner-ok {{
@@ -480,14 +460,10 @@ def build_css(theme: str) -> str:
         color: var(--red);
         background: linear-gradient(90deg, var(--red-soft), var(--amber-soft));
         border: 1px solid var(--red-glow);
-        box-shadow: 0 0 20px var(--red-soft);
     }}
 
-    .banner strong {{ color: inherit; font-weight: 700; }}
-
-    /* VERDICT */
     .verdict {{
-        padding: 12px 16px;
+        padding: 12px 14px;
         border-radius: var(--r);
         background: var(--surface-2);
         border-left: 3px solid var(--accent);
@@ -495,50 +471,39 @@ def build_css(theme: str) -> str:
         color: var(--text);
         line-height: 1.55;
         margin-top: 16px;
+        box-shadow: var(--shadow-sm);
     }}
 
-    .verdict strong {{ color: var(--text); font-weight: 700; }}
-
-    /* BUTTONS */
     div.stButton > button {{
         min-height: 40px;
-        border-radius: var(--r-sm);
+        border-radius: 10px;
         border: 1px solid var(--border-hi);
-        background: var(--surface-2);
+        background: rgba(17,29,43,0.7);
         color: var(--text);
-        font-weight: 600;
-        font-size: 13px;
-        font-family: inherit;
-        transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+        font-weight: 700;
+        font-size: 12.5px;
+        transition: all 0.18s ease;
     }}
 
     div.stButton > button:hover {{
         border-color: var(--accent);
         color: var(--accent);
         background: var(--accent-soft);
-        box-shadow: 0 0 0 3px var(--accent-soft);
         transform: translateY(-1px);
-    }}
-
-    div.stButton > button:active {{
-        transform: translateY(0) scale(0.98);
     }}
 
     div.stButton > button[kind="primary"] {{
         background: linear-gradient(135deg, var(--accent), var(--accent-2));
         border-color: transparent;
-        color: #06121a;
-        font-weight: 700;
-        box-shadow: 0 0 24px var(--accent-glow);
+        color: #08141a;
+        box-shadow: 0 0 18px var(--accent-glow);
     }}
 
     div.stButton > button[kind="primary"]:hover {{
-        box-shadow: 0 0 32px var(--accent-glow), 0 0 60px var(--accent-soft);
-        color: #06121a;
-        transform: translateY(-1px);
+        box-shadow: 0 0 26px var(--accent-glow), 0 0 50px var(--accent-soft);
+        color: #08141a;
     }}
 
-    /* INPUTS */
     div[data-testid="stSelectbox"] > div > div,
     div[data-baseweb="select"] > div {{
         background-color: var(--input-bg) !important;
@@ -553,34 +518,6 @@ def build_css(theme: str) -> str:
         color: var(--select-text) !important;
     }}
 
-    div[data-testid="stSelectbox"] svg,
-    div[data-baseweb="select"] svg {{
-        fill: var(--text-2) !important;
-    }}
-
-    div[data-baseweb="popover"],
-    div[data-baseweb="popover"] > div,
-    div[role="listbox"] {{
-        background-color: var(--input-bg) !important;
-        border: 1px solid var(--input-border) !important;
-        border-radius: var(--r-sm) !important;
-        box-shadow: var(--shadow-lg) !important;
-    }}
-
-    div[role="listbox"] li,
-    div[role="listbox"] [role="option"] {{
-        background-color: var(--input-bg) !important;
-        color: var(--select-text) !important;
-        font-size: 13px !important;
-    }}
-
-    div[role="listbox"] li:hover,
-    div[role="listbox"] [role="option"]:hover,
-    div[role="option"][aria-selected="true"] {{
-        background-color: var(--accent-soft) !important;
-        color: var(--accent) !important;
-    }}
-
     div[data-testid="stTextInput"] input {{
         background-color: var(--input-bg) !important;
         border-color: var(--input-border) !important;
@@ -589,86 +526,32 @@ def build_css(theme: str) -> str:
         min-height: 40px;
     }}
 
-    /* PROGRESS */
-    div[data-testid="stProgress"] {{
-        margin: 12px 0;
-    }}
-
-    div[data-testid="stProgress"] * {{
-        color: var(--text) !important;
-    }}
-
-    div[data-testid="stProgress"] p,
-    div[data-testid="stProgress"] span,
-    div[data-testid="stProgress"] div[role="progressbar"] + * {{
-        color: var(--text) !important;
-        font-weight: 600 !important;
-        font-size: 12px !important;
-        margin-bottom: 6px !important;
-    }}
-
-    div[data-testid="stProgress"] > div > div {{
-        background-color: var(--surface-3) !important;
-        border-radius: 6px !important;
-        height: 6px !important;
-    }}
-
     div[data-testid="stProgress"] > div > div > div {{
         background: linear-gradient(90deg, var(--accent), var(--purple)) !important;
-        border-radius: 6px !important;
         box-shadow: 0 0 12px var(--accent-glow);
-        height: 6px !important;
     }}
 
-    /* TABLES */
     [data-testid="stDataFrame"] {{
         border: 1px solid var(--border);
         border-radius: var(--r);
         overflow: hidden;
     }}
 
-    [data-testid="stDataFrame"] * {{
-        font-family: inherit !important;
-    }}
-
-    /* DOWNLOAD BUTTON */
-    div.stDownloadButton > button {{
-        min-height: 40px;
-        border-radius: var(--r-sm);
-        border: 1px solid var(--border-hi);
-        background: var(--surface-2);
-        color: var(--text);
-        font-weight: 600;
-        font-size: 13px;
-    }}
-
-    div.stDownloadButton > button:hover {{
-        border-color: var(--green);
-        color: var(--green);
-        background: var(--green-soft);
-    }}
-
-    /* SIDEBAR */
     [data-testid="stSidebar"] {{
-        background: var(--surface) !important;
+        background: rgba(7,13,22,0.9) !important;
         border-right: 1px solid var(--border);
     }}
 
     [data-testid="stSidebar"] > div:first-child {{
-        padding: 24px 20px;
+        padding: 22px 18px;
     }}
 
     [data-testid="stSidebar"] h3 {{
         color: var(--accent) !important;
-        font-size: 10.5px !important;
+        font-size: 10px !important;
         text-transform: uppercase;
         letter-spacing: 0.14em;
-        font-weight: 750;
-        margin: 20px 0 12px !important;
-    }}
-
-    [data-testid="stSidebar"] h3:first-child {{
-        margin-top: 0 !important;
+        font-weight: 800;
     }}
 
     [data-testid="stSidebar"] * {{
@@ -681,43 +564,27 @@ def build_css(theme: str) -> str:
         line-height: 1.55;
     }}
 
-    /* HR */
     hr {{
-        margin: 20px 0 !important;
+        margin: 18px 0 !important;
         border-color: var(--border) !important;
-        opacity: 0.5;
     }}
 
-    /* FOOTER */
     .fineprint {{
         color: var(--text-3);
-        font-size: 10.5px;
+        font-size: 10px;
         text-align: center;
         padding-top: 32px;
         letter-spacing: 0.1em;
-        font-weight: 600;
+        font-weight: 700;
         text-transform: uppercase;
     }}
 
-    /* DIALOGS */
-    [data-testid="stDialog"] > div {{
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--r-lg);
-        box-shadow: var(--shadow-lg);
-    }}
-
-    [data-testid="stDialog"] * {{
-        color: var(--text);
-    }}
-
-    /* RESPONSIVE */
     @media (max-width: 900px) {{
         [data-testid="stAppViewContainer"] > .main .block-container {{
-            padding: 1rem;
+            padding: 1rem 1rem 2rem;
         }}
         .brand-sub {{ display: none; }}
-        .term-header {{ flex-wrap: wrap; }}
+        .term-header {{ flex-wrap: wrap; margin: 0 -1rem 18px; padding-inline: 12px; }}
     }}
 </style>
 """
