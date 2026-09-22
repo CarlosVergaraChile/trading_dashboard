@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AlgoControl · Research & Validation Terminal</title>
+  <link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar"><div class="brand"><div class="logo">A</div><div><b>ALGO<span>CONTROL</span></b><small>Research & validation terminal · José Bordas</small></div></div><div class="badges"><span class="pill green">● SHADOW</span><span class="pill amber">BROKER NOT CONNECTED</span><span class="pill red">ORDERS DISABLED</span><button id="theme" class="icon">☀</button></div></header>
+  <nav class="tabs"><button class="active" data-tab="overview">Overview</button><button data-tab="compare">Algorithm comparison</button><button data-tab="quality">Synthetic quality</button><button data-tab="scenarios">Scenario lab</button><button data-tab="audit">Audit</button></nav>
+  <main>
+    <section id="overview" class="panel active"><div class="hero"><div><label>ALGO CONTROL · PROOF OF CONCEPT</label><h1>Does synthetic training transfer to market behaviour?</h1><p>A transparent, safe terminal for comparing demonstration algorithms across mock market data and reproducible synthetic scenarios.</p></div><div class="hero-status"><strong>SAFE DEMO</strong><span>Real orders: disabled</span><span>Data: MOCK + SYNTHETIC</span></div></div><div class="metrics" id="metrics"></div><div class="grid"><article class="card"><h2>Portfolio monitor <span class="pill cyan">MOCK DATA</span></h2><canvas id="chart" height="230"></canvas></article><article class="card"><h2>Operating boundary</h2><div class="boundary"><div><b>MODE</b><strong>SHADOW</strong><small>Signals calculated, never executed</small></div><div><b>REAL FEED</b><strong>NOT CONNECTED</strong><small>Mock provider is deterministic</small></div><div><b>SYNTHETIC</b><strong>REGIMESIM</strong><small>Seed: 483920</small></div></div></article></div><article class="card"><h2>Latest algorithm signals</h2><div id="signals" class="signal-grid"></div></article></section>
+    <section id="compare" class="panel"><div class="section-head"><label>TRANSFER TEST</label><h1>Mock versus synthetic performance</h1><p>Same algorithms, same metrics, different data sources.</p></div><article class="card"><div id="comparison" class="table-wrap"></div></article></section>
+    <section id="quality" class="panel"><div class="section-head"><label>DATA QUALITY</label><h1>Is the synthetic market realistic?</h1><p>Each component is visible; the aggregate score does not hide limitations.</p></div><div class="metrics" id="qualityMetrics"></div><article class="card"><div id="qualityRows"></div></article></section>
+    <section id="scenarios" class="panel"><div class="section-head"><label>ROBUSTNESS LAB</label><h1>Scenario behaviour</h1><p>Stress cases are synthetic and reproducible.</p></div><article class="card"><div id="scenarios" class="table-wrap"></div></article></section>
+    <section id="audit" class="panel"><div class="section-head"><label>TRACEABILITY</label><h1>Audit trail</h1><p>Every demo evaluation is labelled and reproducible.</p></div><article class="card"><div id="auditRows"></div></article></section>
+  </main><footer>AlgoControl POC · synthetic and mock data only · no investment advice · no orders are sent</footer>
+</div><script src="assets/app.js"></script></body></html>
