@@ -10,27 +10,49 @@ The existing Streamlit validation app remains intact. The José-facing proof of 
 
 ## Run locally
 
-Install dependencies:
+From the repository root:
 
 ```bash
-pip install -r requirements.txt
+python -m venv .venv
 ```
 
-Start the read-only API:
+Windows PowerShell:
 
-```bash
+```powershell
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
 python -m uvicorn backend.main:app --reload
 ```
 
-In another terminal, serve the frontend:
+macOS/Linux:
+
+```bash
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m uvicorn backend.main:app --reload
+```
+
+Leave the API terminal running. In a second terminal, from the repository root, serve the frontend:
 
 ```bash
 python -m http.server 8080 --directory frontend
 ```
 
-Open http://localhost:8080. The API must be running on http://localhost:8000.
+Open the José demo at:
 
-Run tests:
+```text
+http://127.0.0.1:8080
+```
+
+The API documentation is available at:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+The frontend automatically calls port 8000 when served on port 8080. If you open `frontend/index.html` directly with a `file://` URL, the browser may block API requests; use the HTTP server command above.
+
+Run tests in a third terminal:
 
 ```bash
 pytest
