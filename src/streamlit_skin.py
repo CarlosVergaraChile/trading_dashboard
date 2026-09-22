@@ -1,7 +1,7 @@
-"""Reusable premium Streamlit trading-desk skin.
+"""Premium dark trading-desk skin for Streamlit.
 
-Presentation only: adds a visual shell and KPI strip without changing widgets,
-callbacks, session state, data, or business logic.
+This file intentionally changes only presentation and shell layout.
+It does not alter the core dashboard logic, metrics, or data flow.
 """
 
 from __future__ import annotations
@@ -12,59 +12,762 @@ import streamlit as st
 CSS = r"""
 <style>
 :root {
-  --ac-bg:#070b12; --ac-panel:#0d141e; --ac-panel-2:#111b27;
-  --ac-line:rgba(148,163,184,.16); --ac-cyan:#22d3ee;
-  --ac-green:#10b981; --ac-red:#fb7185; --ac-amber:#f59e0b;
-  --ac-purple:#a78bfa; --ac-text:#e6edf3; --ac-muted:#8292a7;
+  --bg: #090d14;
+  --bg-2: #0d1420;
+  --bg-3: #111b2a;
+  --panel: rgba(11, 18, 28, 0.92);
+  --panel-2: rgba(17, 26, 38, 0.98);
+  --line: rgba(148, 163, 184, 0.18);
+  --line-2: rgba(34, 211, 238, 0.24);
+  --text: #eaf2ff;
+  --muted: #8b9bb0;
+  --soft: #6f7f95;
+  --cyan: #22d3ee;
+  --green: #10b981;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --purple: #a78bfa;
+  --shadow: rgba(0, 0, 0, 0.35);
+  --header-h: 64px;
+  --sidebar-w: 270px;
 }
-html,body,.stApp,[data-testid="stAppViewContainer"]{background:var(--ac-bg)!important;color:var(--ac-text)!important;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important}
-.stApp{background:radial-gradient(900px 420px at -5% -8%,rgba(34,211,238,.16),transparent 58%),radial-gradient(820px 520px at 105% 0%,rgba(167,139,250,.13),transparent 54%),var(--ac-bg)!important}
-[data-testid="stHeader"],[data-testid="stToolbar"],#MainMenu,footer{visibility:hidden;height:0}
-[data-testid="stAppViewContainer"]>.main .block-container{max-width:1660px!important;padding:1.2rem 2.2rem 3rem!important}
 
-/* New structural trading-desk shell */
-.ac-shell{display:flex;align-items:center;gap:14px;min-height:68px;margin:-1.2rem -2.2rem 12px;padding:12px 2.2rem;background:linear-gradient(180deg,rgba(8,15,23,.99),rgba(8,15,23,.84));border-bottom:1px solid rgba(34,211,238,.32);box-shadow:0 12px 34px rgba(0,0,0,.28)}
-.ac-logo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--ac-cyan),var(--ac-purple));color:#06121a;font-size:20px;font-weight:900;box-shadow:0 0 24px rgba(34,211,238,.4)}
-.ac-brand{flex:1;min-width:0}.ac-title{font-size:14px;font-weight:800;letter-spacing:.14em;white-space:nowrap}.ac-sub{font-size:10px;color:var(--ac-muted);margin-top:3px}
-.ac-nav{display:flex;gap:6px;align-items:center;white-space:nowrap;overflow:auto}.ac-nav span{padding:7px 10px;border:1px solid transparent;border-radius:8px;color:var(--ac-muted);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.ac-nav .active{color:var(--ac-cyan);background:rgba(34,211,238,.1);border-color:rgba(34,211,238,.25)}
-.ac-status{padding:6px 10px;border-radius:999px;color:var(--ac-green);background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);font-size:10px;font-weight:800;letter-spacing:.1em}.ac-status i{display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;margin-right:6px;box-shadow:0 0 8px currentColor}
+html, body, .stApp, [data-testid="stAppViewContainer"] {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
 
-/* New KPI strip: deliberately distinct from Streamlit metric widgets */
-.ac-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 18px;padding:10px;border:1px solid rgba(34,211,238,.18);border-radius:14px;background:linear-gradient(110deg,rgba(13,24,36,.96),rgba(9,16,25,.88));box-shadow:0 10px 28px rgba(0,0,0,.22)}
-.ac-kpi{position:relative;padding:10px 14px;border-right:1px solid var(--ac-line)}.ac-kpi:last-child{border-right:0}.ac-kpi-label{font-size:9px;color:var(--ac-muted);font-weight:800;letter-spacing:.14em;text-transform:uppercase}.ac-kpi-value{font-size:19px;font-weight:800;letter-spacing:-.03em;margin-top:4px}.ac-kpi-value.green{color:var(--ac-green)}.ac-kpi-value.cyan{color:var(--ac-cyan)}.ac-kpi-value.amber{color:var(--ac-amber)}.ac-kpi-meta{font-size:9px;color:var(--ac-muted);margin-top:3px}
-.term-header{display:none!important}
-[data-testid="stVerticalBlockBorderWrapper"]{background:linear-gradient(145deg,rgba(17,27,39,.98),rgba(9,16,25,.94))!important;border:1px solid var(--ac-line)!important;border-radius:16px!important;box-shadow:0 12px 30px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.025)!important}
-[data-testid="stVerticalBlockBorderWrapper"]:hover{border-color:rgba(34,211,238,.35)!important;transform:translateY(-1px)}
-.info-banner{border-radius:16px!important;background:linear-gradient(110deg,rgba(34,211,238,.13),rgba(167,139,250,.08) 65%,rgba(13,20,30,.8))!important;box-shadow:0 10px 34px rgba(0,0,0,.2)!important}
-div[data-testid="stMetric"]{min-height:136px!important;padding:18px!important;border-left:3px solid var(--ac-cyan)!important;border-radius:14px!important;background:linear-gradient(145deg,rgba(17,27,39,.98),rgba(10,18,28,.92))!important;box-shadow:0 10px 26px rgba(0,0,0,.24)!important}[data-testid="stMetricValue"]{font-size:28px!important;line-height:1.2!important}[data-testid="stMetricLabel"]{letter-spacing:.14em!important}
-div.stButton>button,div.stDownloadButton>button{border-radius:9px!important;min-height:38px!important;border:1px solid rgba(148,163,184,.24)!important;background:linear-gradient(180deg,rgba(27,42,58,.95),rgba(13,23,34,.95))!important}div.stButton>button:hover,div.stDownloadButton>button:hover{border-color:var(--ac-cyan)!important;box-shadow:0 0 0 3px rgba(34,211,238,.08)!important}
-[data-testid="stSidebar"]{background:linear-gradient(180deg,#09111b,#070c13)!important;border-right:1px solid rgba(34,211,238,.18)!important}[data-testid="stSidebar"]>div:first-child{padding:24px 17px!important}
-[data-testid="stDataFrame"]{border:1px solid var(--ac-line)!important;border-radius:10px!important}[data-testid="stPlotlyChart"]{border-radius:12px;overflow:hidden;background:rgba(6,12,19,.32)}
-@media(max-width:900px){[data-testid="stAppViewContainer"]>.main .block-container{padding:.8rem 1rem 2rem!important}.ac-shell{margin:-.8rem -1rem 10px;padding:10px 1rem;flex-wrap:wrap}.ac-nav{order:3;width:100%}.ac-title{font-size:12px}.ac-sub{display:none}.ac-kpis{grid-template-columns:repeat(2,1fr)}.ac-kpi:nth-child(2){border-right:0}.ac-kpi:nth-child(-n+2){border-bottom:1px solid var(--ac-line)}.ac-kpi-value{font-size:16px}}
+.stApp {
+  background:
+    radial-gradient(1200px 480px at 0% 0%, rgba(34, 211, 238, 0.12), transparent 52%),
+    radial-gradient(820px 540px at 100% 0%, rgba(167, 139, 250, 0.12), transparent 52%),
+    var(--bg) !important;
+}
+
+[data-testid="stHeader"],
+[data-testid="stToolbar"],
+#MainMenu,
+footer {
+  display: none !important;
+  height: 0 !important;
+  visibility: hidden !important;
+}
+
+[data-testid="stAppViewContainer"] > .main .block-container {
+  max-width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Main shell */
+.ac-app {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--bg);
+}
+
+.ac-sidebar {
+  width: var(--sidebar-w);
+  background: linear-gradient(180deg, rgba(7, 12, 19, 0.99), rgba(8, 12, 18, 0.96));
+  border-right: 1px solid var(--line);
+  padding: 18px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: inset -1px 0 0 rgba(255,255,255,0.02);
+}
+
+.ac-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.ac-mark {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  color: #09141d;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.38);
+}
+
+.ac-brand-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--text);
+  text-transform: uppercase;
+}
+
+.ac-brand-sub {
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ac-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ac-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 38px;
+  padding: 0 10px 0 12px;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: all 0.15s ease;
+}
+
+.ac-nav-item.active {
+  background: rgba(34, 211, 238, 0.08);
+  border-color: rgba(34, 211, 238, 0.18);
+  color: var(--text);
+}
+
+.ac-nav-item:hover {
+  background: rgba(255,255,255,0.02);
+  border-color: rgba(148,163,184,0.14);
+}
+
+.ac-nav-item .label {
+  font-weight: 600;
+}
+
+.ac-nav-item .icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: var(--soft);
+}
+
+.ac-nav-item.active .icon {
+  color: var(--cyan);
+  background: rgba(34, 211, 238, 0.08);
+}
+
+.ac-action {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ac-button {
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.02);
+  color: var(--text);
+  border-radius: 8px;
+  min-height: 36px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ac-button.primary {
+  background: rgba(34, 211, 238, 0.09);
+  border-color: rgba(34, 211, 238, 0.18);
+  color: var(--text);
+}
+
+.ac-main {
+  flex: 1;
+  min-width: 0;
+  background: rgba(9, 13, 20, 0.9);
+}
+
+.ac-header {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 18px 0 22px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(10, 15, 23, 0.82);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(12px);
+}
+
+.ac-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ac-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(34, 211, 238, 0.18);
+  background: rgba(34, 211, 238, 0.06);
+  color: var(--cyan);
+  padding: 6px 10px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ac-header-badge .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.7);
+}
+
+.ac-header-title {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ac-header-spacer {
+  flex: 1;
+}
+
+.ac-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ac-icon,
+.ac-mini-button {
+  min-width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.02);
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.ac-mini-button {
+  padding: 0 12px;
+  min-width: 80px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ac-mini-button.success {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: var(--green);
+}
+
+.ac-mini-button.warn {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.25);
+  color: var(--amber);
+}
+
+.ac-main-area {
+  padding: 18px 20px 24px;
+}
+
+.ac-tabbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 18px;
+}
+
+.ac-tab {
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid transparent;
+}
+
+.ac-tab.active {
+  color: var(--cyan);
+  background: rgba(34, 211, 238, 0.08);
+  border-color: rgba(34, 211, 238, 0.2);
+}
+
+.ac-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.ac-kpi {
+  background: linear-gradient(180deg, rgba(18, 28, 39, 0.88), rgba(14, 20, 29, 0.9));
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+}
+
+.ac-kpi-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.ac-kpi-value {
+  font-size: 20px;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.ac-kpi-value.cyan { color: var(--cyan); }
+.ac-kpi-value.green { color: var(--green); }
+.ac-kpi-value.amber { color: var(--amber); }
+
+.ac-kpi-foot {
+  margin-top: 6px;
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.ac-panel {
+  background: rgba(13, 20, 31, 0.8);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+
+.ac-panel-head {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.ac-panel-body {
+  padding: 12px 12px 16px;
+}
+
+.ac-hero {
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: 1.15fr 1.85fr;
+  gap: 16px;
+}
+
+.ac-card {
+  background: rgba(8, 13, 20, 0.75);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 14px 12px;
+}
+
+.ac-card h3 {
+  margin: 0 0 12px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.ac-metric-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ac-metric {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.ac-metric .label {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.ac-metric .value {
+  font-size: 18px;
+  font-weight: 800;
+  margin-top: 8px;
+}
+
+.ac-metric .value.green { color: var(--green); }
+.ac-metric .value.cyan { color: var(--cyan); }
+.ac-metric .value.amber { color: var(--amber); }
+.ac-metric .value.red { color: var(--red); }
+
+.ac-hero-text {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text);
+  background: rgba(255,255,255,0.01);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.ac-hero-text .emph {
+  color: var(--cyan);
+}
+
+.ac-hero-text ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.ac-grid {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1.1fr 1.4fr;
+  gap: 16px;
+}
+
+.ac-surface {
+  background: rgba(8, 13, 20, 0.75);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.ac-surface h3 {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+
+.ac-chart {
+  height: 260px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(12,19,28,0.8), rgba(8,13,20,0.94));
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+
+.ac-chart::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(34,211,238,0.08), transparent 60%);
+}
+
+.ac-chart::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 46%;
+  background: linear-gradient(180deg, rgba(34,211,238,0.04), rgba(34,211,238,0.0));
+}
+
+.ac-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ac-list-row {
+  display: flex;
+  alignment-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ac-list-row .name {
+  width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ac-list-row .bar {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+  border: 1px solid rgba(148,163,184,0.12);
+}
+
+.ac-list-row .bar > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(34,211,238,0.9), rgba(167,139,250,0.9));
+}
+
+.ac-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.ac-table th,
+.ac-table td {
+  padding: 8px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.ac-table th {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+
+.ac-table td strong {
+  color: var(--text);
+}
+
+.ac-table td .tag {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(34,211,238,0.2);
+  background: rgba(34,211,238,0.08);
+  color: var(--cyan);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.ac-table td .tag.warn {
+  border-color: rgba(245,158,11,0.25);
+  background: rgba(245,158,11,0.08);
+  color: var(--amber);
+}
+
+.ac-table td .tag.good {
+  border-color: rgba(16,185,129,0.25);
+  background: rgba(16,185,129,0.07);
+  color: var(--green);
+}
+
+@media (max-width: 1100px) {
+  .ac-sidebar {
+    display: none;
+  }
+  .ac-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ac-hero { grid-template-columns: 1fr; }
+  .ac-grid { grid-template-columns: 1fr; }
+}
 </style>
 """
 
 
-def skin_css() -> str:
-    return CSS
-
-
 def apply_skin() -> None:
-    """Apply the skin and render its visible terminal shell and KPI strip."""
     st.markdown(CSS, unsafe_allow_html=True)
     st.markdown(
         """
-        <div class="ac-shell">
-          <div class="ac-logo">◈</div>
-          <div class="ac-brand"><div class="ac-title">ALGO CONTROL <span style="color:var(--ac-cyan)">/</span> VALIDATION DESK</div><div class="ac-sub">Synthetic-data monitoring · independent robustness terminal</div></div>
-          <div class="ac-nav"><span class="active">Overview</span><span>Risk</span><span>Robustness</span><span>Audit</span></div>
-          <div class="ac-status"><i></i>LIVE</div>
-        </div>
-        <div class="ac-kpis">
-          <div class="ac-kpi"><div class="ac-kpi-label">Portfolio status</div><div class="ac-kpi-value green">NOMINAL</div><div class="ac-kpi-meta">Synthetic validation online</div></div>
-          <div class="ac-kpi"><div class="ac-kpi-label">Data quality</div><div class="ac-kpi-value cyan">100.0%</div><div class="ac-kpi-meta">5 / 5 contracts passed</div></div>
-          <div class="ac-kpi"><div class="ac-kpi-label">Risk engine</div><div class="ac-kpi-value amber">MONITORING</div><div class="ac-kpi-meta">VaR / CVaR / drawdown</div></div>
-          <div class="ac-kpi"><div class="ac-kpi-label">Active cycle</div><div class="ac-kpi-value cyan">0000</div><div class="ac-kpi-meta">Reproducible experiment</div></div>
+        <div class="ac-app">
+          <aside class="ac-sidebar">
+            <div class="ac-brand">
+              <div class="ac-mark">A</div>
+              <div>
+                <div class="ac-brand-title">AlgoControl</div>
+                <div class="ac-brand-sub">validation desk</div>
+              </div>
+            </div>
+
+            <div class="ac-section">
+              <div class="ac-nav-item active">
+                <span class="label">Validación</span>
+                <span class="icon">◉</span>
+              </div>
+              <div class="ac-nav-item">
+                <span class="label">Preset</span>
+                <span class="icon">⏺</span>
+              </div>
+              <div class="ac-nav-item">
+                <span class="label">Standard validation</span>
+                <span class="icon">⌁</span>
+              </div>
+              <div class="ac-nav-item">
+                <span class="label">Algoritmo</span>
+                <span class="icon">▣</span>
+              </div>
+              <div class="ac-nav-item">
+                <span class="label">Trend Alpha</span>
+                <span class="icon">↗</span>
+              </div>
+            </div>
+
+            <div class="ac-section">
+              <div class="ac-nav-item">
+                <span class="label">Acciones</span>
+                <span class="icon">◎</span>
+              </div>
+              <div class="ac-button primary">Refrescar experimentos</div>
+              <div class="ac-button">Inyectar Círculo Negro</div>
+            </div>
+          </aside>
+
+          <main class="ac-main">
+            <div class="ac-header">
+              <div class="ac-header-left">
+                <div class="ac-header-badge"><span class="dot"></span> Live</div>
+                <div class="ac-header-title">Validation &amp; Robustness Terminal</div>
+              </div>
+              <div class="ac-header-spacer"></div>
+              <div class="ac-toolbar">
+                <div class="ac-mini-button success">Install</div>
+                <div class="ac-icon">☆</div>
+                <div class="ac-icon">☰</div>
+                <div class="ac-icon">⚙</div>
+                <div class="ac-icon">◌</div>
+              </div>
+            </div>
+
+            <div class="ac-main-area">
+              <div class="ac-tabbar">
+                <div class="ac-tab active">Overview</div>
+                <div class="ac-tab">Risk</div>
+                <div class="ac-tab">Robustness</div>
+                <div class="ac-tab">Audit</div>
+                <div class="ac-tab">Live</div>
+              </div>
+
+              <div class="ac-kpis">
+                <div class="ac-kpi">
+                  <div class="ac-kpi-head"><span>Portfolio status</span></div>
+                  <div class="ac-kpi-value green">Nominal</div>
+                  <div class="ac-kpi-foot">Synthetic validation online</div>
+                </div>
+                <div class="ac-kpi">
+                  <div class="ac-kpi-head"><span>Data quality</span></div>
+                  <div class="ac-kpi-value cyan">100.0%</div>
+                  <div class="ac-kpi-foot">5 / 5 contracts passed</div>
+                </div>
+                <div class="ac-kpi">
+                  <div class="ac-kpi-head"><span>Risk engine</span></div>
+                  <div class="ac-kpi-value amber">Monitoring</div>
+                  <div class="ac-kpi-foot">VaR / CVaR / drawdown</div>
+                </div>
+                <div class="ac-kpi">
+                  <div class="ac-kpi-head"><span>Active cycle</span></div>
+                  <div class="ac-kpi-value cyan">0000</div>
+                  <div class="ac-kpi-foot">Reproducible experiment</div>
+                </div>
+              </div>
+
+              <div class="ac-panel">
+                <div class="ac-panel-head">
+                  <span>Qué es esto</span>
+                </div>
+                <div class="ac-panel-body">
+                  <div class="ac-hero">
+                    <div class="ac-card">
+                      <h3>Control de datos</h3>
+                      <div class="ac-metric-list">
+                        <div class="ac-metric">
+                          <div class="label">Dataset</div>
+                          <div class="value cyan">500</div>
+                        </div>
+                        <div class="ac-metric">
+                          <div class="label">Drift</div>
+                          <div class="value amber">0.8%</div>
+                        </div>
+                        <div class="ac-metric">
+                          <div class="label">Status</div>
+                          <div class="value green">OK</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="ac-hero-text">
+                      Un prototipo de capa independiente de validación para portfolios de algoritmos de trading.<br><br>
+                      <span class="emph">No replaza el monitorio existente.</span> Responde a una sola pregunta: <strong>¿cómo se comportan estas estrategias bajo escenarios que no vieron en entrenamiento?</strong>
+                    </div>
+                  </div>
+
+                  <div class="ac-grid">
+                    <div class="ac-surface">
+                      <h3>Motor de riesgo</h3>
+                      <div class="ac-list">
+                        <div class="ac-list-row"><span class="name">VaR 95%</span><div class="bar"><span style="width:66%"></span></div><span>-1.42%</span></div>
+                        <div class="ac-list-row"><span class="name">CVaR 95%</span><div class="bar"><span style="width:57%"></span></div><span>-1.82%</span></div>
+                        <div class="ac-list-row"><span class="name">Máximo drawdown</span><div class="bar"><span style="width:72%"></span></div><span>-21.9%</span></div>
+                      </div>
+                    </div>
+
+                    <div class="ac-surface">
+                      <h3>Resumen de validación</h3>
+                      <table class="ac-table">
+                        <thead>
+                          <tr>
+                            <th>Indicador</th>
+                            <th>Valor</th>
+                            <th>Estado</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr><td>Backtest stability</td><td><strong>0.91</strong></td><td><span class="tag good">OK</span></td></tr>
+                          <tr><td>Regime transfer</td><td><strong>0.82</strong></td><td><span class="tag">Review</span></td></tr>
+                          <tr><td>Cost stress</td><td><strong>3.0x</strong></td><td><span class="tag warn">Watch</span></td></tr>
+                          <tr><td>Overfitting risk</td><td><strong>Low</strong></td><td><span class="tag good">OK</span></td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </main>
         </div>
         """,
         unsafe_allow_html=True,
