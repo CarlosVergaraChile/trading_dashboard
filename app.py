@@ -15,10 +15,10 @@ import plotly.graph_objects as go
 import streamlit as st
 
 from src.data_loader import (
-    generate_simulation_data,
     generate_portfolio_returns,
     DEFAULT_SEED,
 )
+from backend.evaluation import daily_recommendation, metric_bundle
 from src.data_quality import validate_synthetic_data, summarize_quality
 from src.risk_analysis import (
     historical_var,
@@ -29,7 +29,7 @@ from src.risk_analysis import (
     sortino_ratio,
     calculate_market_risk,
 )
-from src.generators import REGIMES, evaluate_algorithm_under_scenarios
+from src.generators import REGIMES, evaluate_algorithm_under_scenarios, generate_scenario
 from src.report_generator import generate_validation_report
 from src.streamlit_skin import apply_skin
 
@@ -486,6 +486,41 @@ def build_css(theme: str) -> str:
 
     .verdict strong {{ color: var(--text); font-weight: 700; }}
 
+    .daily-verdict {{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 16px;
+        margin: 12px 0 14px;
+        border: 1px solid var(--border-hi);
+        border-left: 4px solid var(--accent);
+        border-radius: var(--r);
+        background: linear-gradient(105deg, var(--surface-2), var(--surface-3));
+        box-shadow: var(--shadow-sm);
+    }}
+
+    .daily-verdict-copy {{ display: grid; gap: 4px; }}
+    .daily-verdict-label {{
+        color: var(--text-2);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+    }}
+    .daily-verdict-note {{ color: var(--text-2); font-size: 11px; }}
+    .daily-verdict-badge {{
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: .08em;
+        white-space: nowrap;
+    }}
+    .daily-verdict-continue {{ color: var(--green); background: var(--green-soft); border: 1px solid var(--green-glow); }}
+    .daily-verdict-retrain {{ color: var(--amber); background: var(--amber-soft); border: 1px solid var(--amber); }}
+    .daily-verdict-stop {{ color: var(--red); background: var(--red-soft); border: 1px solid var(--red-glow); }}
+
     div.stButton > button {{
         min-height: 40px;
         border-radius: var(--r-sm);
@@ -707,6 +742,7 @@ def init_state() -> None:
         "last_refresh": datetime.now(timezone.utc),
         "pipeline": "Standard validation",
         "selected_algorithm": "Trend Alpha",
+        "selected_regime": "Sideways",
         "theme": "dark",
     }
     for key, value in defaults.items():
@@ -775,7 +811,9 @@ def validation_cards(report: dict[str, bool]) -> str:
         "columns_match_set": "Esquema contractual",
         "price_greater_than_zero": "Precios > 0",
         "no_null_values": "Integridad / nulos",
-        "volatility_within_bounds": "Drift de volatilidad",
+        "reference_data_available": "Referencia SPY disponible",
+        "ks_test_passed": "KS: distribución compatible",
+        "wasserstein_within_bounds": "Wasserstein: distancia controlada",
     }
     rows = []
     for key, label in labels.items():
@@ -1051,6 +1089,12 @@ with st.sidebar:
          "Defensive Delta", "Volatility Epsilon", "Macro Zeta"],
         index=0,
     )
+    st.session_state.selected_regime = st.selectbox(
+        "Régimen de mercado",
+        list(REGIMES),
+        index=list(REGIMES).index(st.session_state.selected_regime),
+        help="El gráfico de precios y la validación usan este escenario avanzado.",
+    )
 
     st.markdown("### Acciones")
     if st.button("↻  Refrescar experimentos", width="stretch"):
@@ -1073,8 +1117,16 @@ with st.sidebar:
     )
 
 
-# DATA
-df = generate_simulation_data(inject_error=critical)
+# DATA — all price visualizations use the regime-aware generator.
+df = generate_scenario(
+    regime=st.session_state.selected_regime,
+    n_observations=500,
+    seed=DEFAULT_SEED + st.session_state.refresh_cycle,
+)
+if critical:
+    shock_index = int(len(df) * 0.78)
+    df.loc[shock_index, "Return"] = -0.31
+    df["Price"] = 100.0 * (1.0 + df["Return"]).cumprod()
 quality_report = validate_synthetic_data(df)
 passed, total, pass_rate = summarize_quality(quality_report)
 failed_checks = total - passed
@@ -1136,6 +1188,29 @@ with right:
         c1.metric("VaR 95%", f"{var_95:.2%}", help="Percentil 5 de retornos sintéticos.")
         c2.metric("CVaR 95%", f"{cvar_95:.2%}", help="Promedio de la cola por debajo del VaR.")
         c3.metric("Máximo drawdown", f"{mdd:.2%}", help="Mayor caída desde un máximo previo.")
+
+        daily_metrics = metric_bundle(df["Return"])
+        daily_verdict = daily_recommendation(daily_metrics)
+        verdict_class = daily_verdict.lower()
+        verdict_color = {
+            "CONTINUE": "var(--green)",
+            "RETRAIN": "var(--amber)",
+            "STOP": "var(--red)",
+        }[daily_verdict]
+        verdict_note = {
+            "CONTINUE": "Dentro de los límites de drawdown y pérdida de cola.",
+            "RETRAIN": "El CVaR 95% supera el umbral de -3%; revisar entrenamiento.",
+            "STOP": "El máximo drawdown cruza el límite de -15%; detener evaluación.",
+        }[daily_verdict]
+        st.markdown(
+            f'<div class="daily-verdict" style="border-left-color:{verdict_color};">'
+            f'<div class="daily-verdict-copy">'
+            f'<span class="daily-verdict-label">Veredicto diario · {st.session_state.selected_regime}</span>'
+            f'<span class="daily-verdict-note">{verdict_note}</span>'
+            f'</div><span class="daily-verdict-badge daily-verdict-{verdict_class}">'
+            f'{daily_verdict}</span></div>',
+            unsafe_allow_html=True,
+        )
 
         st.plotly_chart(
             price_figure(df, bool(failed_checks)),
