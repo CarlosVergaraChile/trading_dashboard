@@ -1,92 +1,58 @@
-# AlgoControl Research & Validation Terminal
+# AlgoControl - Trading Algorithm Dashboard 📈
 
-Safe proof of concept for José Bordas. The project compares deterministic mock market data with synthetic data across demonstration algorithms, risk metrics and stress scenarios.
+Una plataforma avanzada de analítica y visualización diseñada para la **evaluación robusta de algoritmos de trading**. Este dashboard permite monitorear métricas clave de rendimiento, analizar la calidad de los datos y simular escenarios mediante la generación de datos sintéticos, optimizando la toma de decisiones estratégicas sobre portafolios de ETFs, acciones y divisas.
 
-## Safety boundary
+---
 
-This demo has no broker connection, no order endpoint and no order execution. The frontend explicitly labels `MOCK`, `SYNTHETIC`, `PAPER` and `SHADOW` modes. `MOCK` is not a real market feed.
+## 🚀 Características Principales
 
-The existing Streamlit validation app remains intact. The José-facing proof of concept is the new FastAPI + vanilla HTML frontend.
+*   **Evaluación de Algoritmos:** Análisis enfocado estrictamente en la consistencia y el rendimiento de los modelos (Métricas Sharpe, Equity, y estado del algoritmo), diferenciándose de las herramientas tradicionales de portafolio.
+*   **Simulación con Datos Sintéticos:** Capacidad avanzada para modelar escenarios y validar estrategias en entornos controlados mediante la generación de datos artificiales de alta fidelidad.
+*   **Análisis de Riesgo y Calidad:** Módulos integrados para la auditoría de calidad de datos (`data_quality.py`) y gestión de riesgo adaptativa (`risk_analysis.py`).
+*   **Interfaz de Alta Fidelidad:** Diseño optimizado en React (con soporte para cambio de temas claro/oscuro y skins alternativas) y backend escalable.
 
-## Run locally
+---
 
-From the repository root:
+## 🛠️ Estructura del Proyecto
 
-```bash
-python -m venv .venv
-```
+El repositorio mantiene una arquitectura limpia y modular para separar la lógica de evaluación, los datos y la interfaz de usuario:
 
-Windows PowerShell:
+| Componente / Archivo | Descripción |
+| :--- | :--- |
+| **`src/App.jsx`** | Interfaz principal y lógica de presentación visual (React). |
+| **`backend/evaluation.py`** | Motor de cálculo para métricas de rendimiento y estadísticas profundas. |
+| **`backend/algorithms.py`** | Definición y control de los algoritmos de trading integrados. |
+| **`src/data_quality.py`** | Módulo de validación y control de calidad de las fuentes de datos. |
+| **`src/risk_analysis.py`** | Análisis estadístico de riesgo y simulaciones de mercado. |
+| **`src/generators.py`** | Motor de generación de datos sintéticos para pruebas de estrés. |
 
-```powershell
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python -m uvicorn backend.main:app --reload
-```
+---
 
-macOS/Linux:
+## 🔧 Requisitos e Instalación
 
-```bash
-source .venv/bin/activate
-pip install -r requirements.txt
-python -m uvicorn backend.main:app --reload
-```
+Para ejecutar el entorno de desarrollo local, asegúrate de contar con los módulos definidos en las dependencias del sistema:
 
-Leave the API terminal running. In a second terminal, from the repository root, serve the frontend:
+1. **Instalación de dependencias del Backend (Python):**
+   ```bash
+   pip install -r requirements.txt
+   ```
+   *Nota: Incluye bibliotecas clave como `yfinance` y `pandas` para el procesamiento de datos.*
 
-```bash
-python -m http.server 8080 --directory frontend
-```
+2. **Ejecución de Pruebas de Concepto:**
+   ```bash
+   pytest tests/test_poc.py
+   ```
 
-Open the José demo at:
+---
 
-```text
-http://127.0.0.1:8080
-```
+## 📊 Flujo de Trabajo (CI/CD)
 
-The API documentation is available at:
+El proyecto cuenta con scripts de automatización para el despliegue rápido y la sincronización de cambios:
+*   Integración y despliegue continuo vinculados mediante scripts de automatización local hacia repositorios **GitLab** y plataformas en la nube.
+*   Control de ejecución directo desde los directorios locales definidos para el proyecto.
 
-```text
-http://127.0.0.1:8000/docs
-```
+---
 
-The frontend automatically calls port 8000 when served on port 8080. If you open `frontend/index.html` directly with a `file://` URL, the browser may block API requests; use the HTTP server command above.
+## ✒️ Autor
 
-Run tests in a third terminal:
-
-```bash
-pytest
-```
-
-## Architecture
-
-- `backend/providers.py`: deterministic mock and synthetic providers.
-- `backend/algorithms.py`: four demonstration algorithms with one common interface.
-- `backend/evaluation.py`: shared metrics and transfer divergence.
-- `backend/main.py`: read-only FastAPI endpoints; deliberately no order endpoint.
-- `backend/storage.py`: SQLite audit store.
-- `frontend/`: index.html-style AlgoControl terminal with dark/light themes, comparison, synthetic quality, scenarios and audit.
-- `app.py`: original Streamlit application preserved for internal validation.
-
-## What is implemented
-
-- mock versus synthetic market data;
-- algorithm comparison;
-- risk metrics;
-- synthetic-quality components;
-- scenario lab using the existing scenario generator;
-- paper/shadow safety labels;
-- audit records;
-- polling every 15 seconds;
-- responsive dark/light frontend.
-
-## Not implemented
-
-- real market provider;
-- broker integration;
-- live orders;
-- authentication;
-- WebSockets;
-- production database migration.
-
-These are intentionally excluded from the proof of concept.
+* **Carlos Vergara** - *Desarrollo e Integración* - [carlosvergarachile](https://github.com/carlosvergarachile)
